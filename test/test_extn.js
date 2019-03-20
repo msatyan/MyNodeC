@@ -9,6 +9,7 @@ function Test_NativeCalls()
     myaddon.sayHello();
 
     // Send some value to C function
+    console.log();
     myaddon.CPrint("Hello!!! from JavaScript");
 
     // Receive some value from C function
@@ -16,14 +17,17 @@ function Test_NativeCalls()
     console.log(`${str}  (Received from C printed by JS)`);
 
     // Get a Json Object from C function
+    console.log();
     var obj1 = myaddon.CreateJsonObject();
     console.log("CreateJsonObject-1 returned : ", obj1);
 
+    console.log();
     obj1 = myaddon.CreateJsonObject("Name given by JS function");
     console.log("CreateJsonObject-2 returned : ", obj1);
 
 
     // Send and receive values
+    console.log();
     const x = 8;
     const y = 100;
     const prime = myaddon.SpeedTest_CPrimeCount(x, y);
