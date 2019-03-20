@@ -1,0 +1,32 @@
+{
+  "name": "mync1",
+  "version": "1.0.0",
+  "description": "A Sample node.js C Addons module by using N-API",
+  "main": "test/test_extn.js",
+  "private": true,
+  "dependencies": {
+    "bindings": "~1.2.1"
+  },
+  "devDependencies": {
+    "node-gyp": "^3.8.0"
+  },
+  "engines": {
+    "node": ">=10.15.1"
+  },
+  "scripts": {
+    "test": "node test/test_extn.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/msatyan/MyNodeC.git"
+  },
+  "keywords": [
+    "N-API"
+  ],
+  "author": "Sathyanesh Krishnan",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/msatyan/MyNodeC/issues"
+  },
+  "homepage": "https://github.com/msatyan/MyNodeC#readme"
+}
