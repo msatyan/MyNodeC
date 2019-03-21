@@ -111,6 +111,24 @@ napi_value MyC_CreateJsonObject(napi_env env, const napi_callback_info info)
 
 
 
-// Next
+// TODO:
+////// Simple Asynchronous Operations /////
+// napi_create_async_work
+// napi_delete_async_work
+// napi_queue_async_work
+// napi_cancel_async_work
+
+////// Custom Asynchronous Operations /////
+// napi_async_init
+// napi_async_destroy
+// napi_make_callback
+// napi_open_callback_scope
+// napi_close_callback_scope
+
+/////// N-API Callback types /////
+// napi_callback_info
+// napi_callback
+// napi_finalize
 // napi_async_execute_callback
 // napi_async_complete_callback
+// napi_threadsafe_function_call_js
