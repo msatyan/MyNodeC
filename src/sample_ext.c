@@ -132,3 +132,12 @@ napi_value MyC_CreateJsonObject(napi_env env, const napi_callback_info info)
 // napi_async_execute_callback
 // napi_async_complete_callback
 // napi_threadsafe_function_call_js
+
+// Promises
+// napi_create_promise
+// napi_resolve_deferred
+// napi_reject_deferred
+// napi_is_promise
+
+// Script execution
+// napi_run_script
