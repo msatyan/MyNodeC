@@ -3,6 +3,10 @@
 #include <assert.h>
 
 
+#define DECLARE_NAPI_METHOD(name, func)         \
+    {                                           \
+        name, 0, func, 0, 0, 0, napi_default, 0 \
+    }
 
 napi_ref MyObject::constructor;
 
@@ -10,11 +14,6 @@ MyObject::MyObject(double value) : value_(value), env_(nullptr), wrapper_(nullpt
 {
 
 }
-
-#define DECLARE_NAPI_METHOD(name, func)         \
-    {                                           \
-        name, 0, func, 0, 0, 0, napi_default, 0 \
-    }
 
 MyObject::~MyObject()
 {
@@ -31,6 +30,7 @@ void MyObject::Destructor(napi_env env, void *nativeObject, void * /*finalize_hi
 napi_value MyObject::Init(napi_env env, napi_value exports)
 {
     napi_status status;
+    napi_value cons;
     napi_property_descriptor properties[] =
     {
         {"value", 0, 0, GetValue, SetValue, 0, napi_default, 0},
@@ -38,9 +38,7 @@ napi_value MyObject::Init(napi_env env, napi_value exports)
         DECLARE_NAPI_METHOD("multiply", Multiply),
     };
 
-    napi_value cons;
-    status =
-        napi_define_class(env, "MyObject", NAPI_AUTO_LENGTH, New, nullptr, 3, properties, &cons);
+    status =  napi_define_class(env, "MyObject", NAPI_AUTO_LENGTH, New, nullptr, 3, properties, &cons);
     assert(status == napi_ok);
 
     status = napi_create_reference(env, cons, 1, &constructor);
