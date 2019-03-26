@@ -27,7 +27,7 @@
 // napi_value created from the string passed in as utf8Name.
 
 
-#include "mync1_api.h"
+#include "addon_api.h"
 
 
 napi_value Init(napi_env env, napi_value exports)
@@ -67,6 +67,8 @@ napi_value Init(napi_env env, napi_value exports)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "CreateJsonObject", fn)) != napi_ok)
 		return NULL;
+
+	MyObject::Init(env, exports);
 
 	return exports;
 }

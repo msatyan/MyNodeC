@@ -1,7 +1,7 @@
 
 
 # include <assert.h>
-#include "mync1_api.h"
+#include "addon_api.h"
 #include "extutil.h"
 
 // Call a C Function from JavaScript

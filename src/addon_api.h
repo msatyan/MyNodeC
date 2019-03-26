@@ -4,6 +4,7 @@
 
 #include <node_api.h>
 #include <stdio.h>
+#include "MyNativeObj.h"
 
 napi_value MyC_SayHello(napi_env env, napi_callback_info info);
 napi_value MyC_GetValueFromC (napi_env env, napi_callback_info info);

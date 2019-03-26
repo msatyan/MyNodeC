@@ -1,4 +1,4 @@
-#include "mync1_api.h"
+#include "addon_api.h"
 
 //////////////////////////////////////////////////////////////
 // Receive parameters from JavaScript and return a Value to JavaScript

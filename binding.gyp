@@ -3,10 +3,11 @@
     {
       "target_name": "mync1",
       "sources": [
-              "src/sample_ext.c",
-              "src/speedtst.c",
-              "src/addon_main.c",
-              "src/extutil.c"
+              "src/addon_main.cpp",
+              "src/HelloWorld1.cpp",
+              "src/SpeedTest.cpp",
+              "src/MyNativeObj.cpp",
+              "src/extutil.cpp"
             ]
     }
   ]

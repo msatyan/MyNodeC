@@ -1,9 +1,9 @@
 const myaddon = require('bindings')('mync1');
 
-function Test_NativeCalls()
+function TestNativeCalls()
 {
     console.log(' ');
-    console.log('///////////  Test_NativeCalls //////////////');
+    console.log('///////////  TestNativeCalls //////////////');
 
     // Call a C function
     myaddon.sayHello();
@@ -81,11 +81,11 @@ function SpeedTest_JSPrimeCount(x, y)
 
 
 
-function Native_vs_JavaScript(x, y)
+function SppdTest(x, y)
 {
     console.log(' ');
     console.log(' ');
-    console.log('/////////// Performance: Native_vs_JavaScript //////////////');
+    console.log('/////////// SppdTest: Native vs JS //////////////');
     console.log("Speed Test: \'Pure JavaScript\' vs \'Native Code\'. ");
     console.log(`Calculating Prime Numbers Between ${x} and ${y}`);
 
@@ -131,10 +131,29 @@ function Native_vs_JavaScript(x, y)
 }
 
 
+function TestMyNativeObject()
+{
+    var obj = new myaddon.MyObject(10);
+    console.log( obj.plusOne() ); // 11
+    console.log( obj.plusOne() ); // 12
+    console.log( obj.plusOne() ); // 13
+
+    console.log( obj.multiply().value ); // 13
+    console.log( obj.multiply(10).value ); // 130
+
+    var newobj = obj.multiply(-1);
+    console.log( newobj.value ); // -13
+    console.log( obj === newobj ); // false
+}
+
+
+
 function Main()
 {
-    Test_NativeCalls();
-    Native_vs_JavaScript(2, 5000);
+    TestNativeCalls();
+    // SppdTest(2, 5000);
+
+    TestMyNativeObject();
 }
 
 Main();
