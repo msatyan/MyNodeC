@@ -1,12 +1,13 @@
 # [Node C Extension](https://msatyan.github.io/MyNodeC/)
 A Sample node.js C Addons module by using N-API  
 
-If you are new to node.js native (C/C++) Addons and starting the groundwork for creating one then you may come across many approaches such as V8, NAN, node-addon-api, N-API. If you are starting a new development now (2019) then your best choice could be to use N-API (or its C++ wrapper class node-addon-api).  
+If you are new to node.js native (C/C++) Addons and starting the groundwork for creating one then you may come across many approaches such as V8, NAN, node-addon-api, N-API. For a new module the best choice could be to use **N-API** (or its C++ wrapper class node-addon-api).  
 
-- **V8**: is the default JavaScript engine used by node.js, it has a set of C++ library for application to interact with it.
-- **NAN**: Native Abstractions for Node.js; simplify the life a bit by shielding from the crazy changes introduced by V8 API for every releases.
+
+- **V8**: is the default JavaScript engine used by node.js, it has a set of C++ library for application to interact with it directly.
+- **NAN**: Native Abstractions for Node.js; simplifies the life a bit by shielding from the crazy changes introduced by V8 API for every releases.
 - **node-addon-api**: Header-only C++ wrapper classes which simplify the use of the C based N-API provided by Node.js core.
-- **N-API**: is the node.js core C API to interact with underlying JavaScript engine. It provides Application Binary Interface (ABI) stability guarantee across Node.js versions.
+- **N-API**: is the **node.js core C API** to interact with underlying JavaScript engine. It provides Application Binary Interface (ABI) stability guarantee across Node.js versions.
 
 
 
