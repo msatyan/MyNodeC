@@ -25,13 +25,21 @@ function TestNativeCalls()
     obj1 = myaddon.CreateJsonObject("Name given by JS function");
     console.log("CreateJsonObject-2 returned : ", obj1);
 
-
     // Send and receive values
     console.log();
     const x = 8;
     const y = 100;
+
     const prime = myaddon.SpeedTest_CPrimeCount(x, y);
     console.log(`Prime numbers between ${x} and ${y} is ${prime}`);
+
+    // Example of a Promise
+    myaddon.MyPromise1SpeedTest( x, y)
+    .then( (pCount) => { console.log( `MyPromise1SpeedTest ${pCount}` ) },
+    err => { console.log(err)  }  );
+
+    console.log( "End of TestNativeCalls" );
+
 }
 
 

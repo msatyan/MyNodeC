@@ -1,4 +1,6 @@
 #include "addon_api.h"
+#include "cpp_util.h"
+
 
 //////////////////////////////////////////////////////////////
 // Receive parameters from JavaScript and return a Value to JavaScript
@@ -12,13 +14,9 @@ napi_value SpeedTest_CPrimeCount(napi_env env, napi_callback_info info)
 	// [in-out] argc: Specifies the size of the provided argv array and
 	// receives the actual count of arguments
 	size_t argc = 2;
-
-	int i = 0;
-	int j = 0;
 	int32_t x = 0;
 	int32_t y = 0;
-	int VRange = 0;
-	int isPrime = 0;
+
 	int32_t PrimeCount = 0;
 	napi_value rcValue;
 
@@ -41,34 +39,8 @@ napi_value SpeedTest_CPrimeCount(napi_env env, napi_callback_info info)
 		return NULL;
 	}
 
-
-	// printf( "\n (x=%d, y=%d)", x, y);
-	if (x < 2)
-		x = 2;
-
-	++y;
-	for (i = x; i < y; i++)
-	{
-		isPrime = 1;
-
-		VRange = i / 2; //This Validation Range is good enough
-		++VRange;
-		for (j = 2; j < VRange; j++)
-		{
-			// Check whether it is  divisible by any number other than 1
-			if (!(i%j))
-			{
-				isPrime = 0;
-				break;
-			}
-		}
-
-		if (isPrime)
-		{
-			//printf(" [%d] ", i);
-			++PrimeCount;
-		}
-	}
+	// Calculate number of prims between x and y
+	PrimeCount = CPrimeCount(x, y);
 
 	if ((status = napi_create_int32(env, PrimeCount, &rcValue)) != napi_ok)
 	{
@@ -79,4 +51,6 @@ napi_value SpeedTest_CPrimeCount(napi_env env, napi_callback_info info)
 	// printf(" [%d] ", PrimeCount);
 	return (rcValue);
 }
+
+
 

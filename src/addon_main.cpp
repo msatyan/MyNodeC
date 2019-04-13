@@ -55,7 +55,6 @@ napi_value Init(napi_env env, napi_value exports)
 	if ((status = napi_set_named_property(env, exports, "CPrint", fn)) != napi_ok)
 		return NULL;
 
-
 	// SpeedTest_CPrimeCount -> CPrimeCount
 	if ((status = napi_create_function(env, "SpeedTest_CPrimeCount", NAPI_AUTO_LENGTH, SpeedTest_CPrimeCount, NULL, &fn)) != napi_ok)
 		return NULL;
@@ -67,6 +66,13 @@ napi_value Init(napi_env env, napi_value exports)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "CreateJsonObject", fn)) != napi_ok)
 		return NULL;
+
+	// MyPromise1SpeedTest -> MyPromise1
+	if ((status = napi_create_function(env, "MyPromise1SpeedTest", NAPI_AUTO_LENGTH, MyPromise1, NULL, &fn)) != napi_ok)
+		return NULL;
+	if ((status = napi_set_named_property(env, exports, "MyPromise1SpeedTest", fn)) != napi_ok)
+		return NULL;
+
 
 	MyObject::Init(env, exports);
 
