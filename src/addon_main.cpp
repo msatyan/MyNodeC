@@ -73,6 +73,17 @@ napi_value Init(napi_env env, napi_value exports)
 	if ((status = napi_set_named_property(env, exports, "MyPromise1SpeedTest", fn)) != napi_ok)
 		return NULL;
 
+	// MyCallback1 -> CMyCallback1
+	if ((status = napi_create_function(env, "MyCallback1", NAPI_AUTO_LENGTH, CMyCallback1, NULL, &fn)) != napi_ok)
+		return NULL;
+	if ((status = napi_set_named_property(env, exports, "MyCallback1", fn)) != napi_ok)
+		return NULL;
+
+	// MyCallback2 -> CMyCallback2
+	if ((status = napi_create_function(env, "MyCallback2", NAPI_AUTO_LENGTH, CMyCallback2, NULL, &fn)) != napi_ok)
+		return NULL;
+	if ((status = napi_set_named_property(env, exports, "MyCallback2", fn)) != napi_ok)
+		return NULL;
 
 	MyObject::Init(env, exports);
 

@@ -89,6 +89,12 @@ napi_value MyPromise1(napi_env env, napi_callback_info info)
 
     // Allocate storage space for passing informaiton to the Async operation
     prom_data_ex_t *promDataEx = (prom_data_ex_t *)malloc(sizeof(prom_data_ex_t));
+	if (promDataEx == NULL)
+	{
+		napi_throw_error(env, NULL, "Memory allocation error");
+		return NULL;
+	}
+
     promDataEx->asynchronous_action_status = 1;
 
 

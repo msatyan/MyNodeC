@@ -1,46 +1,5 @@
 const myaddon = require('bindings')('mync1');
 
-function TestNativeCalls()
-{
-    console.log(' ');
-    console.log('///////////  TestNativeCalls //////////////');
-
-    // Call a C function
-    myaddon.sayHello();
-
-    // Send some value to C function
-    console.log();
-    myaddon.CPrint("Hello!!! from JavaScript");
-
-    // Receive some value from C function
-    const str = myaddon.GetValueFromC();
-    console.log(`${str}  (Received from C printed by JS)`);
-
-    // Get a Json Object from C function
-    console.log();
-    var obj1 = myaddon.CreateJsonObject();
-    console.log("CreateJsonObject-1 returned : ", obj1);
-
-    console.log();
-    obj1 = myaddon.CreateJsonObject("Name given by JS function");
-    console.log("CreateJsonObject-2 returned : ", obj1);
-
-    // Send and receive values
-    console.log();
-    const x = 8;
-    const y = 100;
-
-    const prime = myaddon.SpeedTest_CPrimeCount(x, y);
-    console.log(`Prime numbers between ${x} and ${y} is ${prime}`);
-
-    // Example of a Promise
-    myaddon.MyPromise1SpeedTest( x, y)
-    .then( (pCount) => { console.log( `MyPromise1SpeedTest ${pCount}` ) },
-    err => { console.log(err)  }  );
-
-    console.log( "End of TestNativeCalls" );
-
-}
 
 
 // We can use this for SPEED TEST between JavaScrip and C
@@ -138,6 +97,32 @@ function SppdTest(x, y)
     console.log(' ');
 }
 
+function TestNativeCalls()
+{
+    console.log(' ');
+    console.log('///////////  TestNativeCalls //////////////');
+
+    // Call a C function
+    myaddon.sayHello();
+
+    // Send some value to C function
+    console.log();
+    myaddon.CPrint("Hello!!! from JavaScript");
+
+    // Receive some value from C function
+    const str = myaddon.GetValueFromC();
+    console.log(`${str}  (Received from C printed by JS)`);
+
+    // Get a Json Object from C function
+    console.log();
+    var obj1 = myaddon.CreateJsonObject();
+    console.log("CreateJsonObject-1 returned : ", obj1);
+
+    console.log();
+    obj1 = myaddon.CreateJsonObject("Name given by JS function");
+    console.log("CreateJsonObject-2 returned : ", obj1);
+}
+
 
 function TestMyNativeObject()
 {
@@ -154,6 +139,41 @@ function TestMyNativeObject()
     console.log( obj === newobj ); // false
 }
 
+function TestCallback() {
+    let x = 8;
+    let y = 100;
+
+    console.log("Start: TestCallback()");
+    // The native addon function take a JS callback function as argument to it.
+    myaddon.MyCallback1(msg => console.log(msg));
+
+    // The native addon is being given three params, x, y, and callback function
+    // The native function internally call the JS callback by passing two params (msg and p)
+    myaddon.MyCallback2(x, y, (msg, p) => {
+        console.log(msg); // msg and p are the arguments pass on from Native function
+        console.log(`Prime numbers between ${x} and ${y} is ${p}`);
+    });
+
+    console.log("End: TestCallback()");
+}
+
+function TestPromise() {
+    // Send and receive values
+    console.log();
+    const x = 8;
+    const y = 100;
+
+    console.log("Start: TestPromise()");
+    // const prime = myaddon.SpeedTest_CPrimeCount(x, y);
+    // console.log(`Prime numbers between ${x} and ${y} is ${prime}`);
+
+    // Example of a Promise
+    myaddon.MyPromise1SpeedTest(x, y)
+        .then((pCount) => { console.log(`MyPromise1SpeedTest ${pCount}`) },
+            err => { console.log(err) });
+
+    console.log("End: TestPromise()");
+}
 
 
 function Main()
@@ -162,6 +182,10 @@ function Main()
     // SppdTest(2, 5000);
 
     TestMyNativeObject();
+
+    TestCallback();
+
+    TestPromise();
 }
 
 Main();
