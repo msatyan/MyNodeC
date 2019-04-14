@@ -7,6 +7,7 @@
               "src/HelloWorld1.cpp",
               "src/SpeedTest.cpp",
               "src/MyNativeObj.cpp",
+              "src/MyCallback.cpp",
               "src/MyPromise1.cpp",
               "src/cpp_util.cpp",
               "src/extutil.cpp"
