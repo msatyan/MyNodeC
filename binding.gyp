@@ -9,6 +9,7 @@
               "src/MyNativeObj.cpp",
               "src/MyCallback.cpp",
               "src/MyPromise1.cpp",
+              "src/MyEventEmit.cpp",
               "src/cpp_util.cpp",
               "src/extutil.cpp"
             ]

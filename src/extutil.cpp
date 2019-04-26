@@ -64,3 +64,15 @@ int ObjAddVal_double( napi_env env, napi_value obj, const char *key, double val 
 
     return(0);
 }
+
+
+void MyPrintType( napi_env env, napi_value val, char *name )
+{
+  napi_valuetype xtype;
+
+  napi_typeof( env, val, &xtype );
+  if (xtype == napi_function)
+  {
+	  printf("\n napi_typeof of %s is %d", name, xtype);
+  }
+}
