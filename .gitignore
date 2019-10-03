@@ -5,6 +5,7 @@ package-lock.json
 .vscode
 .vs
 *.VC.db
+.history
 
 
 **/*.map

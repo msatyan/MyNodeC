@@ -1,7 +1,7 @@
 # [Node C Extension](https://msatyan.github.io/MyNodeC/)
 A Sample node.js C Addons module by using N-API  
 
-If you are new to node.js native (C/C++) Addons and starting the groundwork for creating one then you may come across many approaches such as V8, NAN, node-addon-api, N-API. For a new module the best choice could be to use **N-API** (or its C++ wrapper class node-addon-api).  
+If you are new to node.js native (C/C++) Addons and starting the groundwork for creating one then you may come across many approaches such as V8, NAN, node-addon-api, N-API, node-gyp, CMake.js etc. For a new module the best choice could be to use **N-API** (or its C++ wrapper class **node-addon-api**).  
 
 
 - **V8**: is the default JavaScript engine used by node.js, it has a set of C++ library for application to interact with it directly.
@@ -11,12 +11,12 @@ If you are new to node.js native (C/C++) Addons and starting the groundwork for 
 
 
 
-### Why N-API
-Node.js is a JavaScript library, yet its core is writ in C/C++ ([V8](https://github.com/v8/v8), [Libuv](https://libuv.org/) and many other such modules). The easy and popular way of writing a node.js modules is also by using JavaScript. Such a modules are mostly platform independent and easy to manage. There are times when the performance of JavaScript is not enough, then you may have to consider native Node.js Addon modules. There are many advantages with native Addon node modules, efficient and excellent runtime performance, and the list go on. One of the major downside of native node module is the overhead of maintenance. This overhead alone is good enough to keep you think twice before introducing a native module. You may have to recompile your native module with each major node.js release that often come with build breakage. There are many effort in the past to eliminate or minimize such difficulties, [NAN](https://github.com/nodejs/nan) is the most popular among that. Though NAN did a reasonably good job, still not addressed all possible pain points.
+### Why N-API?
+Node.js is a JavaScript library, yet its core is writ in C/C++ ([V8](https://github.com/v8/v8), [Libuv](https://libuv.org/) and many other such modules). The easy and popular way of writing a node.js modules is also by using JavaScript. Such a modules are mostly platform independent and easy to manage. There are times when the performance of JavaScript is not enough, then we may have to consider native Node.js Addon modules. There are many advantages with native Addon node modules, efficient and excellent runtime performance, and the list go on. One of the major downside of native node module is the overhead of maintenance. This overhead alone is good enough to keep us think twice before introducing a native module. Till the arrival of N-API none of the abstraction API used to provide ABI stability, then we may have to recompile our native module with each major node.js release that often come with build breakage. There are many effort in the past to eliminate or minimize such difficulties, [NAN](https://github.com/nodejs/nan) is the most popular among that. Though NAN did a reasonably good job, still not addressed all possible pain points.
 
-The [N-API](https://nodejs.org/api/n-api.html) is expected to address this problem to a new level, it is likely Application Binary Interface (ABI) stable across versions of Node.js release. This will be a big relief for those who maintain native node.js Addon modules. Though the N-API was available with two past LTS node releases, it was experimental at that time. The current node.js LTS release (v10) has marked it as stable. I feel then it is right time to jump in and start using it. So far I am impressed with the concept and design because of its simplicity and easy to use than NAN.
+The [N-API](https://nodejs.org/api/n-api.html) is expected to address this problem to a new level, it is expected to be Application Binary Interface (ABI) stable across versions of Node.js release. This will be a big relief for those who maintain native node.js Addon modules. Though the N-API was available with two past LTS node releases, it was experimental at that time. The current node.js LTS release (v10) has marked it as stable. I feel then it is right time to jump in and start using it. So far I am impressed with the concept and design because of its simplicity and easy to use than NAN.
 
-The N-API is C based API and it is part of the node.js core itself, then no external module dependency. To provide support for C++, the node.js team is also maintains a C++ wrapper module (created on top of N-API) called [node-addon-api](https://github.com/nodejs/node-addon-api). This wrapper is not part of node.js core, still it is maintained by the node.js team.
+The **N-API** is C language API and it is part of node.js core itself, then no external module dependency. To provide support for C++, the node.js team is also maintains a C++ wrapper module (created on top of N-API) called [node-addon-api](https://github.com/nodejs/node-addon-api). This wrapper is not part of node.js core, still it is maintained by the node.js team.
 
 
 ### Functionalities coved in this example
@@ -32,6 +32,8 @@ The N-API is C based API and it is part of the node.js core itself, then no exte
 : It’s C API that allows us to interact with node.js engine in a completely abstract way.
 - [NODE-GYP](https://github.com/nodejs/node-gyp)
 : node-gyp is a cross-platform command-line tool to compile native extension.
+- [CMake.js](https://github.com/cmake-js/cmake-js)
+: CMake.js is a Node.js native addon build tool based on CMake (it is very similar to node-gyp).
 - [BINDINGS](https://www.npmjs.com/package/bindings)
 : It’s a Node.js package which allows us to export our native extension.
 - BINDING.GYP : specify how we need to compile our native extension.
@@ -60,7 +62,7 @@ node-gyp configure
 # node-gyp build  --debug
 node-gyp build
 
-# if you prefer rebuild
+# To do rebuild, then
 node-gyp rebuild
 ```
 
