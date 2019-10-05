@@ -72,7 +72,7 @@ cmake-js build --debug
 
 
 ### Run a simple sample
-The following **SpeedTest.js** sample program execute two functions one is a native function **SpeedTest_CPrimeCount()** and the other one is a pure JavaScript function **SpeedTest_JSPrimeCount()**. Both the functions are calculating number of prime numbers between tiven two numbers (say X=2 and Y=1000). Then compare the time taken by the two functions.
+The following **SpeedTest.js** sample program execute two functions one is a native function **SpeedTest_CPrimeCount()** and the other one is a pure JavaScript function **SpeedTest_JSPrimeCount()**. Both the functions are calculating number of prime numbers between a given two numbers (say X=2 and Y=1000). Then compare the time taken by the two functions.
 ```bash
 npm test
 # or
