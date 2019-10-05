@@ -63,6 +63,7 @@ npm install
 ```bash
 # build native module with cmake-js
 cmake-js compile
+
 # or
 cmake-js build
 
@@ -82,7 +83,7 @@ node test/SpeedTest.js
 node test/SpeedTest.js  1000
 
 # other test
-node test/TestEextensions.js
+node test/TestExtensions.js
 ```
 
 
