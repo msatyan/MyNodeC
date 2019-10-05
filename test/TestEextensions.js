@@ -5,8 +5,7 @@ const myaddon = require('bindings')('mync1');
 // We can use this for SPEED TEST between JavaScrip and C
 // Find the number of prime numbers between X and Y
 // The equivalent C function is SpeedTest_CPrimeCount
-function SpeedTest_JSPrimeCount(x, y)
-{
+function SpeedTest_JSPrimeCount(x, y) {
     let i = 0;
     let j = 0;
     let VRange = 0;
@@ -18,16 +17,13 @@ function SpeedTest_JSPrimeCount(x, y)
 
     y += 1;
     i = x;
-    while (i < y)
-    {
+    while (i < y) {
         isPrime = 1;
         VRange = i / 2; // This Validation Range is good enough
         j = 2;
         VRange += 1;
-        while (j < VRange)
-        {
-            if (i % j == 0)
-            {
+        while (j < VRange) {
+            if (i % j == 0) {
                 j += 1;
                 isPrime = 0;
                 break;
@@ -35,8 +31,7 @@ function SpeedTest_JSPrimeCount(x, y)
             j += 1;
         }
 
-        if (isPrime)
-        {
+        if (isPrime) {
             PrimeCount += 1;
         }
 
@@ -48,8 +43,7 @@ function SpeedTest_JSPrimeCount(x, y)
 
 
 
-function SppdTest(x, y)
-{
+function SppdTest(x, y) {
     console.log(' ');
     console.log(' ');
     console.log('/////////// SppdTest: Native vs JS //////////////');
@@ -79,8 +73,7 @@ function SppdTest(x, y)
 
     console.log(`Prime numbers between ${x} and ${y} is ${rc3_c}`);
 
-    if (rc3 == rc3_c)
-    {
+    if (rc3 == rc3_c) {
         console.log(' ');
         console.log('Time taken by :');
         console.log(`     Native function = ${delta_c};`);
@@ -89,16 +82,14 @@ function SppdTest(x, y)
         let r = delta_js / delta_c;
         console.log(`The Native C function appeared to be ${r} times faster`);
     }
-    else
-    {
+    else {
         console.log(`Error: Prime Count not matching C=${rc3_c} Node=${rc3}`);
     }
 
     console.log(' ');
 }
 
-function TestNativeCalls()
-{
+function TestNativeCalls() {
     console.log(' ');
     console.log('///////////  TestNativeCalls //////////////');
 
@@ -124,19 +115,18 @@ function TestNativeCalls()
 }
 
 
-function TestMyNativeObject()
-{
+function TestMyNativeObject() {
     var obj = new myaddon.MyObject(10);
-    console.log( obj.plusOne() ); // 11
-    console.log( obj.plusOne() ); // 12
-    console.log( obj.plusOne() ); // 13
+    console.log(obj.plusOne()); // 11
+    console.log(obj.plusOne()); // 12
+    console.log(obj.plusOne()); // 13
 
-    console.log( obj.multiply().value ); // 13
-    console.log( obj.multiply(10).value ); // 130
+    console.log(obj.multiply().value); // 13
+    console.log(obj.multiply(10).value); // 130
 
     var newobj = obj.multiply(-1);
-    console.log( newobj.value ); // -13
-    console.log( obj === newobj ); // false
+    console.log(newobj.value); // -13
+    console.log(obj === newobj); // false
 }
 
 function TestCallback() {
@@ -176,8 +166,7 @@ function TestPromise() {
 }
 
 
-function Main()
-{
+function Main() {
     TestNativeCalls();
     // SppdTest(2, 5000);
 

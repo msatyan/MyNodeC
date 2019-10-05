@@ -9,7 +9,7 @@ function Main() {
     const emitter = new EventEmitter()
 
     emitter.on('start', () => {
-        console.log( '### Sensor reading started ...');
+        console.log('### Sensor reading started ...');
     })
 
     emitter.on('sensor1', (evt) => {
@@ -26,14 +26,14 @@ function Main() {
         console.log('### Sensor reading ended');
     })
 
-    console.log( "emitter is " );
-    console.log( emitter );
+    console.log("emitter is ");
+    console.log(emitter);
 
-    console.log( "emitter.emit is " );
-    console.log( emitter.emit );
+    console.log("emitter.emit is ");
+    console.log(emitter.emit);
 
     var x = emitter.emit.bind(emitter);
-    console.log( x ) // [Function: bound emit]
+    console.log(x) // [Function: bound emit]
 
     // addon.callEmit( emitter.emit.bind(emitter) )
 }

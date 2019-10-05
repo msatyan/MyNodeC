@@ -50,8 +50,7 @@ int CPrimeCount( int x, int y )
 // We can use this for SPEED TEST between JavaScrip and C
 // Find the number of prime numbers between X and Y
 // The equivalent C function is SpeedTest_CPrimeCount
-function SpeedTest_JSPrimeCount(x, y)
-{
+function SpeedTest_JSPrimeCount(x, y) {
     let i = 0;
     let j = 0;
     let VRange = 0;
@@ -63,16 +62,13 @@ function SpeedTest_JSPrimeCount(x, y)
 
     y += 1;
     i = x;
-    while (i < y)
-    {
+    while (i < y) {
         isPrime = 1;
         VRange = i / 2; // This Validation Range is good enough
         j = 2;
         VRange += 1;
-        while (j < VRange)
-        {
-            if (i % j == 0)
-            {
+        while (j < VRange) {
+            if (i % j == 0) {
                 j += 1;
                 isPrime = 0;
                 break;
@@ -80,8 +76,7 @@ function SpeedTest_JSPrimeCount(x, y)
             j += 1;
         }
 
-        if (isPrime)
-        {
+        if (isPrime) {
             PrimeCount += 1;
         }
 
@@ -93,8 +88,7 @@ function SpeedTest_JSPrimeCount(x, y)
 
 
 
-function SppdTest(x, y)
-{
+function SppdTest(x, y) {
     console.log(' ');
     console.log(' ');
     console.log('/////////// SppdTest: Native vs JS //////////////');
@@ -123,8 +117,7 @@ function SppdTest(x, y)
 
     console.log(`Prime numbers between ${x} and ${y} is ${rc3_c}`);
 
-    if (rc3 == rc3_c)
-    {
+    if (rc3 == rc3_c) {
         console.log(' ');
         console.log(`Time taken by C  function = ${delta_c}`);
         console.log(`Time taken by JS function = ${delta_js}`);
@@ -132,8 +125,7 @@ function SppdTest(x, y)
         let r = delta_js / delta_c;
         console.log(`The Native C function appeared to be ${r} times faster`);
     }
-    else
-    {
+    else {
         console.log(`Error: Prime Count not matching C=${rc3_c} Node=${rc3}`);
     }
 
@@ -141,14 +133,12 @@ function SppdTest(x, y)
 }
 
 
-function Main()
-{
-    let y = 500;
+function Main() {
+    let y = 1000;
 
-    if ( process.argv.length == 3)
-    {
-        let tmpy = Number( process.argv[2] );
-        if( tmpy > 2 )
+    if (process.argv.length == 3) {
+        let tmpy = Number(process.argv[2]);
+        if (tmpy > 2)
             y = tmpy;
     }
 
