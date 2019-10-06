@@ -35,51 +35,41 @@ napi_value Init(napi_env env, napi_value exports)
 	napi_status status;
 	napi_value fn;
 
-	// MyC_SayHello -> sayHello
 	if ((status = napi_create_function(env, "sayHello", NAPI_AUTO_LENGTH, MyC_SayHello, NULL, &fn)) != napi_ok)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "sayHello", fn)) != napi_ok)
 		return NULL;
 
-
-	// MyC_GetValueFromC -> GetValueFromC
 	if ((status = napi_create_function(env, "GetValueFromC", NAPI_AUTO_LENGTH, MyC_GetValueFromC, NULL, &fn)) != napi_ok)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "GetValueFromC", fn)) != napi_ok)
 		return NULL;
 
-
-	// MyC_Print -> CPrint
 	if ((status = napi_create_function(env, "CPrint", NAPI_AUTO_LENGTH, MyC_Print, NULL, &fn)) != napi_ok)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "CPrint", fn)) != napi_ok)
 		return NULL;
 
-	// SpeedTest_CPrimeCount -> CPrimeCount
 	if ((status = napi_create_function(env, "SpeedTest_CPrimeCount", NAPI_AUTO_LENGTH, SpeedTest_CPrimeCount, NULL, &fn)) != napi_ok)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "SpeedTest_CPrimeCount", fn)) != napi_ok)
 		return NULL;
 
-	// CreateJsonObject -> MyC_CreateJsonObject
 	if ((status = napi_create_function(env, "CreateJsonObject", NAPI_AUTO_LENGTH, MyC_CreateJsonObject, NULL, &fn)) != napi_ok)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "CreateJsonObject", fn)) != napi_ok)
 		return NULL;
 
-	// MyPromise1SpeedTest -> MyPromise1
 	if ((status = napi_create_function(env, "MyPromise1SpeedTest", NAPI_AUTO_LENGTH, MyPromise1, NULL, &fn)) != napi_ok)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "MyPromise1SpeedTest", fn)) != napi_ok)
 		return NULL;
 
-	// MyCallback1 -> CMyCallback1
 	if ((status = napi_create_function(env, "MyCallback1", NAPI_AUTO_LENGTH, CMyCallback1, NULL, &fn)) != napi_ok)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "MyCallback1", fn)) != napi_ok)
 		return NULL;
 
-	// MyCallback2 -> CMyCallback2
 	if ((status = napi_create_function(env, "MyCallback2", NAPI_AUTO_LENGTH, CMyCallback2, NULL, &fn)) != napi_ok)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "MyCallback2", fn)) != napi_ok)
@@ -87,8 +77,8 @@ napi_value Init(napi_env env, napi_value exports)
 
 	MyObject::Init(env, exports);
 
-	// FOR node-addon-api
-	AllCppInit( env, exports );
+	// Init for my node-addon-api session
+	MyNodeAddonApiInitSession1( env, exports );
 
 	return exports;
 }
