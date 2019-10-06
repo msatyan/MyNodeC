@@ -26,6 +26,7 @@ file(GLOB SOURCE_FILES
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
 target_include_directories(${PROJECT_NAME} PRIVATE ${NODE_ADDON_API_DIR})
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
+target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS=1)
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB})
 
 
