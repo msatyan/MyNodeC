@@ -1,5 +1,5 @@
 # [Node C Extension](https://msatyan.github.io/MyNodeC/)
-A Sample node.js C Addons module by using N-API with CMake.js to build it.
+A Sample node.js C/C++ Addons module by using N-API & node-addon-api along with CMake.js to build the native module. Also a SneakPeek into google V8 engine optimization while executing JavaScript (JS) code.
 
 If you are new to node.js native (C/C++) Addons and starting the groundwork for creating one then you may come across many approaches such as V8, NAN, node-addon-api, N-API, node-gyp, CMake.js etc. For a new module the best choice could be to use **N-API** (or its C++ wrapper class **node-addon-api**).  
 
@@ -31,12 +31,17 @@ The [N-API](https://nodejs.org/api/n-api.html) is expected to address this probl
 The **N-API** is C language API and it is part of node.js core itself, then no external module dependency. To provide support for C++, the node.js team is also maintains a C++ wrapper module (created on top of N-API) called [node-addon-api](https://github.com/nodejs/node-addon-api). This wrapper is not part of node.js core, still it is maintained by the node.js team.
 
 
-### Functionalities coved in this example
+### Native addon functionalities coved in this example
+This example try to mix and match both N-API and node-addon-api in the same module, such approach provides better choice and flexibility for your native addons project.
 - Calling a native function from JavaScript
 - Send data to native function
 - Receive data from native function
 - Send and Receive data between JS and native function
 - Basic error handling.
+- Create NativeObject
+- Callback
+- Promise
+- Event Emitter
 
 
 ### Prerequisite
@@ -76,14 +81,59 @@ cmake-js build --debug
 The following **SpeedTest.js** sample program execute two functions one is a native function **SpeedTest_CPrimeCount()** and the other one is a pure JavaScript function **SpeedTest_JSPrimeCount()**. Both the functions are doing the same operation, calculating number of prime numbers between a given two numbers (say X=2 and Y=1000). Then the sample module compare the time taken by this two functions.
 
 ```bash
-npm test
-
-# or
 node test/SpeedTest.js
-node test/SpeedTest.js  1000
+# try with different range
+node test/SpeedTest.js  800
 
-# other test
+# Other examples
+node test/EventEmit.js
 node test/TestExtensions.js
 ```
 
+
+### Try to do a simple **JS vs C/C++ profiling** by using the SpeedTest.js
+Try to run the SpeedTest.js with different value range; for a moment we may get puzzled with the performance comparison output. What we are seeing is perfectly a normal behavior, if we dig a bit deeper then we may find very interesting discovery.
+
+```bash
+node test/SpeedTest.js  2
+node test/SpeedTest.js  8
+node test/SpeedTest.js  50
+node test/SpeedTest.js  100
+node test/SpeedTest.js  500
+node test/SpeedTest.js  1000
+node test/SpeedTest.js  5000
+node test/SpeedTest.js  50000
+```
+
+#### We may see the following interesting behaviors
+The performance variation we are seeing is because the V8 engine compilers (Ignition & TurboFan) started getting engaged at various stages for executing the JS code efficiently. Two major module involved in this are:
+- **Ignition**: The newest interpreter of V8 engine.
+- **TurboFan**: The newest optimizing compiler of V8 engine.
+
+##### 1) Very lower value range
+- Performance of of JS may not be that bad:  
+JavaScript is a dynamically typed language, it is difficult to make out variable types from the JS code alone. Then to make assumption about the variable type, V8 has to do some runtime profiling and assumption of the JS code, it is done by gathering metadata about the JS code for each iterations. Since we are at very early iterations, at this stage V8 may not have enough profiling information about the JS function to compile it into a native code. Then **Ignition** is the only one get engaged at this stage. The Ignition will get start converting the JS code into equivalent byte code. All following iteration the converted byte code is being used for execution until native code is ready.
+
+```JavaScript
+function Add( a, b ) {
+    return( a + b );
+}
+
+// These are perfectly a valid JavaScript scenario
+// Not recommended such usage for better code optimization.
+Add( 3, 5);
+Add( "Hello ", "World !");
+```
+
+##### 2) Slightly above lower value range
+- Performance of of JS may start falling down significantly:  
+The V8 may have started getting profiling information about the JS function from the previous iterations of execution. Profiling information it gathered for certain portion of the code may be good enough to get start engaging with **TurboFan** compiler. The TurboFan may be busy in converting portion of the JS byte code to native code by using **Peephole optimization** technique. During this time some processing power is being used by TurboFan to compile JS byte code to native code.
+
+##### 3) Somewhat mid-upper value range
+- Performance of of JS tent to be improving:  
+A significant portion of JS function byte code may has converted to native instruction, the **TurboFan** compiler may be still active for converting the remaining JS byte code still left. By now a significant portion of the code is in native, then those instruction set can be execute fast.
+
+##### 4) Upper value range
+- Performance of JS function is excellent and consistent:  
+By now we may be wondering can JavaScript can performance this good, it is nearly comparable to the native function. Yes it is not magic, the **TurboFan** compiler has converted most (if not all) JS byte code to native. From now onwards no need of TurboFan to be engaged. The native instruction set can be send directly to the underlying hardware and it is expected be fast. There are situation V8 may not be successful in converting the entire JS byte code to native; if so any leftover JS byte code will be interpreted by Ignition.
 

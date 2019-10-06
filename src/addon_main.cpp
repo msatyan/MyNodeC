@@ -28,7 +28,7 @@
 
 
 #include "addon_api.h"
-
+#include "addon_api_4cpp.h"
 
 napi_value Init(napi_env env, napi_value exports)
 {
@@ -85,18 +85,15 @@ napi_value Init(napi_env env, napi_value exports)
 	if ((status = napi_set_named_property(env, exports, "MyCallback2", fn)) != napi_ok)
 		return NULL;
 
-	// callEmit -> CMycallEmit
-	if ((status = napi_create_function(env, "callEmit", NAPI_AUTO_LENGTH, CMycallEmit, NULL, &fn)) != napi_ok)
-		return NULL;
-	if ((status = napi_set_named_property(env, exports, "callEmit", fn)) != napi_ok)
-		return NULL;
-
-
 	MyObject::Init(env, exports);
+
+	// FOR node-addon-api
+	AllCppInit( env, exports );
 
 	return exports;
 }
 
-NAPI_MODULE(NODE_GYP_MODULE_NAME, Init)
+// NAPI_MODULE(NODE_GYP_MODULE_NAME, Init)
+NAPI_MODULE( mync1, Init )
 
 

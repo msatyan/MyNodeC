@@ -6,7 +6,6 @@ const addon = require('bindings')('mync1')
 function Main() {
     const emitter = new EventEmitter()
 
-    console.log( "Under development...., event emitter implementation is incomplete" );
     emitter.on('start', () => {
         console.log( '### Sensor reading started ...');
     })
@@ -25,9 +24,8 @@ function Main() {
         console.log('### Sensor reading ended');
     })
 
-    console.log( emitter );
-    // Not ready yet
-    // addon.callEmit( emitter.emit.bind(emitter) )
+    // console.log( emitter );
+    addon.callEmit( emitter.emit.bind(emitter) )
 }
 
 Main();

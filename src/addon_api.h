@@ -1,6 +1,6 @@
 
-#ifndef _MYNC1_H_
-#define _MYNC1_H_
+#ifndef _ADDON_API_
+#define _ADDON_API_
 
 #include <node_api.h>
 #include <stdio.h>
@@ -14,9 +14,8 @@ napi_value MyC_CreateJsonObject(napi_env env, const napi_callback_info info);
 napi_value MyPromise1(napi_env env, napi_callback_info info);
 napi_value CMyCallback1(napi_env env, const napi_callback_info info);
 napi_value CMyCallback2(napi_env env, const napi_callback_info info);
-napi_value CMycallEmit(napi_env env, const napi_callback_info info);
 
-#endif  // _MYNC1_H_
+#endif  // _ADDON_API_
 
 
 

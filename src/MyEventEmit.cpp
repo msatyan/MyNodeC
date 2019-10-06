@@ -1,58 +1,50 @@
-#include <node_api.h>
-#include <assert.h>
+#include <napi.h>
+#include <thread>
 
-#include "cpp_util.h"
-#include <stdio.h>
-#include "extutil.h"
-napi_value CMycallEmit(napi_env env, const napi_callback_info info)
+int ReadSensor1()
 {
-  napi_status status;
-
-  size_t argc = 1;
-  napi_value args[1];
-  status = napi_get_cb_info(env, info, &argc, args, nullptr, nullptr);
-  assert(status == napi_ok);
-
-  // The only  parameter passed to the function is 
-  napi_value emit = args[0];
-
-  napi_value result;
-  //status = napi_get_property_names(env, emit, &result);
-  //assert(status == napi_ok);
-
-
-  status = napi_get_named_property(env, emit, "sensor1", &result);
-  assert(status == napi_ok);
-
-
-  MyPrintType( env, emit, "emit" );
-
-  //napi_valuetype xtype;
-  //napi_typeof(env, emit, &xtype );
-  // Check for the correct calling of the function.
-  //if (xtype == napi_function)
-  //{
-	 // printf("\n napi_typeof value is %d", xtype);
-  //}
-
-
-  
-
-
-//   napi_value aParams2cbJsFunc[1];
-//   status = napi_create_string_utf8(env, "Hello World from CMyCallback1", NAPI_AUTO_LENGTH, aParams2cbJsFunc);
-//   assert(status == napi_ok);
-
-//   napi_value global;
-//   status = napi_get_global(env, &global);
-//   assert(status == napi_ok);
-
-//   napi_value result;
-//   // Invoke JS callback function
-//   status = napi_call_function(env, global, cbJsFunc, 1, aParams2cbJsFunc, &result);
-//   assert(status == napi_ok);
-
-  return nullptr;
+	static int sensor1 = 0;
+	return(++sensor1);
 }
 
+int ReadSensor2()
+{
+	static int sensor2 = 0;
+	return(++sensor2);
+}
+
+
+Napi::Value CallEmit(const Napi::CallbackInfo &info)
+{
+    char buff1[128];
+	char buff2[128];
+
+    Napi::Env env = info.Env();
+
+    Napi::Function emit = info[0].As<Napi::Function>();
+    emit.Call(  {Napi::String::New(env, "start")}  );
+
+    for (int i = 0; i < 6; i++)
+    {
+		// Let us simulate some delay for collecting data from its sensors
+		// std::this_thread::sleep_for(std::chrono::seconds(1));
+		std::this_thread::sleep_for(std::chrono::milliseconds(500));
+
+		sprintf(buff1, "sensor-1 data %d ...", ReadSensor1() );
+
+        emit.Call( { Napi::String::New(env, "sensor1"),
+                   Napi::String::New(env, buff1 ) } );
+
+		// Let, sensor 2 data is reported half the rate as sensor1
+		if (i % 2)
+		{
+			sprintf(buff2, "sensor-2 data %d ...", ReadSensor2() );
+			emit.Call({ Napi::String::New(env, "sensor2"),
+					   Napi::String::New(env, buff2) });
+		}
+    }
+
+    emit.Call( {Napi::String::New(env, "end")} );
+    return Napi::String::New( env, "OK" );
+}
 
