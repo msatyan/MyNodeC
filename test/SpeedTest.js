@@ -124,6 +124,8 @@ function SppdTest(x, y) {
         console.log(' ');
         let r = delta_js / delta_c;
         console.log(`The Native C function appeared to be ${r} times faster`);
+
+        console.log( `{ y: ${y}, rs: ${r}, c: ${delta_c}, js: ${delta_js} },`)
     }
     else {
         console.log(`Error: Prime Count not matching C=${rc3_c} Node=${rc3}`);

@@ -95,7 +95,7 @@ node test/TestExtensions.js
 Try to run the SpeedTest.js with different value range; for a moment we may get puzzled with the performance comparison output. What we are seeing is perfectly a normal behavior, if we dig a bit deeper then we may find very interesting discovery.
 
 ```bash
-node test/SpeedTest.js  2
+node test/SpeedTest.js  3
 node test/SpeedTest.js  8
 node test/SpeedTest.js  50
 node test/SpeedTest.js  100
@@ -139,3 +139,36 @@ A significant portion of JS byte code may has converted into native instruction,
 - Performance of JS function is excellent and consistent:  
 By now we may be wondering can JavaScript be performed this good, it is somewhat comparable to the native function. Yes it is not magic, the **TurboFan** compiler has converted most (if not all) JS byte code to native. From now onwards no need of TurboFan to be engaged. The native instruction can be send directly to the underlying processors and it is expected be run fast. There are situation V8 may not be successful in converting the entire JS byte code to native; if so any leftover portion will be interpreted by Ignition.
 
+
+### SpeedTest.js profile output
+- y  :the rage argument passed to SpeedTest.js
+- rs :relative speed when compared C & JS.
+- c  :time taken by C function for the given argument y value.
+- js :time taken by JS function for the given argument y value.
+```JavaScript
+let ProfileOutput = [
+{ y: 3, rs: 15, c: 10299, js: 158901 },
+{ y: 5, rs: 11, c: 10800, js: 122999 },
+{ y: 10, rs: 11, c: 10800, js: 122500 },
+{ y: 25, rs: 11, c: 10900, js: 124499 },
+{ y: 50, rs: 11, c: 10900, js: 128200 },
+{ y: 100, rs: 11, c: 11500, js: 136400 },
+{ y: 250, rs: 11, c: 16400, js: 185700 },
+{ y: 500, rs: 11, c: 32900, js: 364000 },
+{ y: 800, rs: 35, c: 60401, js: 2171500 },
+{ y: 1000, rs: 28, c: 77400, js: 2189001 },
+{ y: 1500, rs: 15, c: 152599, js: 2311900 },
+{ y: 2000, rs: 10, c: 265800, js: 2658199 },
+{ y: 5000, rs: 3, c: 1430501, js: 4496300 },
+{ y: 8000, rs: 2, c: 3347300, js: 7514100 },
+{ y: 10000, rs: 2, c: 5248800, js: 10847200 },
+{ y: 15000, rs: 1, c: 10421999, js: 20148500 },
+{ y: 20000, rs: 1, c: 19104700, js: 33193900 },
+{ y: 30000, rs: 1, c: 40006900, js: 66896801 },
+{ y: 40000, rs: 1, c: 71726800, js: 114892000 },
+{ y: 50000, rs: 1, c: 106460200, js: 170908100 },
+{ y: 100000, rs: 1, c: 389390700, js: 635012200 },
+{ y: 150000, rs: 1, c: 843773700, js: 1368024300 },
+{ y: 200000, rs: 1, c: 1473544300, js: 2392540000 }
+];
+```
