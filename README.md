@@ -114,7 +114,7 @@ The performance variation we are seeing is because the V8 engine compilers (Igni
 
 ##### 1) At near lower value ranges
 - Performance of of JS may not be that bad:  
-JavaScript is a dynamically typed language, it is difficult to guess data type of variables from JS code alone (please see the following code snippet). Then V8 has to do some runtime profiling and heuristic assumption about the code. The V8 collect more and more metadata information about the code for each run iterations. Since we are at very early iterations, V8 may not have enough metadata information about the JS code to compile it into native. Then the **Ignition** is the only one to be engaged at this moment. The Ignition will get start converting the JS code into equivalent bytecode (and it may get further fine-tuned subsequent iterations). The subsequent run iterations, the bytecode is being used until the equivalent native code is ready.
+JavaScript is a dynamically typed language, it is difficult to guess data type of variables from JS code alone (please see the following code snippet). Then V8 has to do some runtime profiling and heuristic assumption about the code. The V8 collects more and more metadata information about the code for each run iterations. Since we are at very early iterations, V8 may not have enough metadata information about the JS code and runtime behavior to compile the code it into native. Then the **Ignition** is the only one to be engaged at this moment. The Ignition will get start converting the JS code into equivalent bytecode (and it may get further fine-tuned the bytecode in subsequent iterations if necessary). The subsequent run iterations, the bytecode is being used until the equivalent native code is ready.
 
 ```JavaScript
 function Add( a, b ) {
@@ -129,15 +129,15 @@ console.log( Add("Hello ", "World !") );
 
 ##### 2) Slightly above lower value ranges
 - Performance of of JS execution have start falling down significantly:  
-The V8 may have started getting metadata information about various part of the JS code from its previous run iterations. This information is good enough for portions of  bytecode to be converted to native. Then it is time to get **TurboFan** compiler engaged and it will be busy for some time converting bits and pieces of the bytecode to native by using **peephole optimization** technique. The reason for the JS runtime performance degradation in this spectrum is because a slice of processing power is being diverted for TurboFan.
+The V8 may have started getting metadata information about various part of the JS code and the runtime behaviors based on its previous run iterations. This information is good enough for portions of  bytecode to be converted to native. Then it is time to get **TurboFan** compiler engaged and it will be busy for some time converting bits and pieces of the bytecode to native by using **peephole optimization** technique. The reason for the JS runtime performance degradation in this spectrum is because a slice of processing power is being diverted for TurboFan.
 
 ##### 3) Somewhat mid to upper value ranges
 - Performance of of JS start getting better:  
-The **TurboFan** compiler may be still active for converting the remaining bytecode to native. By now a significant portion of the bytecode is already in native, then those instructions can be executed faster.
+The **TurboFan** compiler may be still active for converting the remaining bytecode to native. By now a significant portion of the bytecode is already in native, then those instructions can be executed faster if the runtime behavior remain same.
 
 ##### 4) Upper value ranges
 - Performance of JS function is excellent and consistent:  
-By now we may be wondering can JavaScript be performed this good, it is somewhat comparable to the native function execution speed. Yes it is not magic, the **TurboFan** compiler has converted most (if not all) bytecode to native. From now onwards no need of TurboFan to be engaged. The native instruction can be send directly to the underlying processors and it is expected be run fast. There are situation V8 may not be successful in converting the entire JS bytecode to native; if so any leftover portion will be interpreted by Ignition.
+By now we may be wondering can JavaScript be performed this good, it is somewhat comparable to the native function execution speed. Yes it is not magic, the **TurboFan** compiler has converted most (if not all) bytecode to native. From now onwards no need of TurboFan to be engaged. The native instruction can be send directly to the underlying processors (as long as the runtime behavior remain same) and it is expected be run fast. There are situation V8 may not be successful in converting the entire JS bytecode to native; if so any leftover portion will be interpreted by Ignition.
 
 
 ### SpeedTest.js profile output
