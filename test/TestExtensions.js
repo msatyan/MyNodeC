@@ -177,4 +177,19 @@ function Main() {
     TestPromise();
 }
 
-Main();
+// Main();
+
+
+//////////////////////////////
+function TestNativeCalls2() {
+    console.log(' ');
+    console.log('///////////  TestNativeCalls //////////////');
+
+    // Send some value to C function
+    console.log();
+
+    const val1 = { a: 'Hello World'};
+    myaddon.CPrintJsonObject(val1);
+}
+
+TestNativeCalls2();

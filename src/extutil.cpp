@@ -76,3 +76,38 @@ void MyPrintType( napi_env env, napi_value val, char *name )
 	  printf("\n napi_typeof of %s is %d", name, xtype);
   }
 }
+
+void MyPrintvalueType( napi_valuetype valuetype )
+{
+	if (valuetype == napi_undefined)
+	{
+		printf( "\n valuetype = napi_undefined");
+	} else if (valuetype == napi_null)
+	{
+		printf( "\n valuetype = napi_null");
+	} else if (valuetype == napi_boolean)
+	{
+		printf( "\n valuetype = napi_boolean");
+	} else if (valuetype == napi_number)
+	{
+		printf( "\n valuetype = napi_number");
+	} else if (valuetype == napi_string)
+	{
+		printf( "\n valuetype = napi_string");
+	} else if (valuetype == napi_symbol)
+	{
+		printf( "\n valuetype = napi_symbol");
+	} else if (valuetype == napi_object)
+	{
+		printf( "\n valuetype = napi_object");
+	} else if (valuetype == napi_function)
+	{
+		printf( "\n valuetype = napi_function");
+	} else if (valuetype == napi_external)
+	{
+		printf( "\n valuetype = napi_external");
+	} else
+	{
+		printf( "\n valuetype = ? I don't know");
+	}
+}

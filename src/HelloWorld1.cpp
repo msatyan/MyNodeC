@@ -33,8 +33,9 @@ napi_value MyC_GetValueFromC(napi_env env, napi_callback_info info)
 napi_value MyC_Print(napi_env env, napi_callback_info info)
 {
 	// Specifies the size of the argv array and receives the actual count of arguments
-	size_t argc = 1; // IN & Out
-	napi_value argv[1];
+	const size_t ArgvArraySize = 1;
+	size_t argc = ArgvArraySize; // IN & Out
+	napi_value argv[ArgvArraySize];
 	char buff[1024];
 	size_t buff_len = 0;
 
@@ -60,8 +61,9 @@ napi_value MyC_Print(napi_env env, napi_callback_info info)
 napi_value MyC_CreateJsonObject(napi_env env, const napi_callback_info info)
 {
 	// Specifies the size of the argv array and receives the actual count of arguments
-	size_t argc = 1; // IN & Out
-	napi_value argv[1];
+	const size_t ArgvArraySize = 1;
+	size_t argc = ArgvArraySize; // IN & Out
+	napi_value argv[ArgvArraySize];
 	napi_status status;
 	napi_value string;
 	napi_value obj;
@@ -109,6 +111,42 @@ napi_value MyC_CreateJsonObject(napi_env env, const napi_callback_info info)
 	return (obj);
 }
 
+
+// Receive a JsonObject parameter from JavaScript, and interpret it at C
+napi_value MyC_PrintJsonObject(napi_env env, napi_callback_info info)
+{
+	napi_status status;
+	// Specifies the size of the argv array and receives the actual count of arguments
+	const size_t ArgvArraySize = 2;
+	size_t argc = ArgvArraySize; // IN & Out
+	napi_value argv[ArgvArraySize];
+	char buff[1024];
+	size_t buff_len = 0;
+	napi_value jsthis;
+
+	// napi_get_cb_info(env, info, &argc, argv, NULL, NULL);
+	status = napi_get_cb_info(env, info, &argc, argv, &jsthis, nullptr);
+	if (argc < 1)
+	{
+		napi_throw_error(env, "EINVAL", "Too few arguments");
+		return NULL;
+	}
+
+	printf( "\n");
+	printf( "\n argc = %d", argc);
+
+	// Let us find the valuetype of the given argument
+	napi_valuetype valuetype;
+	status = napi_typeof(env, argv[0], &valuetype);
+	assert(status == napi_ok);
+	// we are expecting the first argument to be an object, check that
+	if (valuetype != napi_object)
+		MyPrintvalueType(valuetype);
+
+
+	printf( "\n");
+	return (NULL);
+}
 
 
 // TODO:
