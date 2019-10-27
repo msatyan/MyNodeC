@@ -55,6 +55,11 @@ napi_value Init(napi_env env, napi_value exports)
 	if ((status = napi_set_named_property(env, exports, "CPrintJsonObject", fn)) != napi_ok)
 		return NULL;
 
+	if ((status = napi_create_function(env, "CPrintJsonObject2", NAPI_AUTO_LENGTH, MyCpp_PrintJsonObject, NULL, &fn)) != napi_ok)
+		return NULL;
+	if ((status = napi_set_named_property(env, exports, "CPrintJsonObject2", fn)) != napi_ok)
+		return NULL;
+
 	if ((status = napi_create_function(env, "SpeedTest_CPrimeCount", NAPI_AUTO_LENGTH, SpeedTest_CPrimeCount, NULL, &fn)) != napi_ok)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "SpeedTest_CPrimeCount", fn)) != napi_ok)

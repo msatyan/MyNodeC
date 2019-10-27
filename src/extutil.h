@@ -14,7 +14,7 @@
 int ObjAddVal_utf8(  napi_env env, napi_value obj, const char *key, const char *val);
 int ObjAddVal_Int32( napi_env env, napi_value obj, const char *key, int val );
 int ObjAddVal_double( napi_env env, napi_value obj, const char *key, double val );
-void MyPrintType( napi_env env, napi_value val, char *name );
-void MyPrintvalueType( napi_valuetype valuetype );
+void MyPrintValueType( napi_env env, napi_value val, char *name );
+void MyPrintValueType2( napi_valuetype valuetype, char *name );
 
 #endif  // _EXTUTIL_H_

@@ -183,13 +183,21 @@ function Main() {
 //////////////////////////////
 function TestNativeCalls2() {
     console.log(' ');
-    console.log('///////////  TestNativeCalls //////////////');
+    console.log('///////////  TestNativeCalls2 //////////////');
 
     // Send some value to C function
     console.log();
 
-    const val1 = { a: 'Hello World'};
+    const val1 = {
+        a: 'Hello World',
+        b: 'JavaScript',
+        c: 'object',
+        AnotherObj: { a1: 1, b1 : 2}
+    };
+
     myaddon.CPrintJsonObject(val1);
+    console.log('///////////');
+    myaddon.CPrintJsonObject2(val1);
 }
 
 TestNativeCalls2();

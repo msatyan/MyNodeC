@@ -10,6 +10,7 @@ napi_value MyC_SayHello(napi_env env, napi_callback_info info);
 napi_value MyC_GetValueFromC (napi_env env, napi_callback_info info);
 napi_value MyC_Print (napi_env env, napi_callback_info info);
 napi_value MyC_PrintJsonObject (napi_env env, napi_callback_info info);
+napi_value MyCpp_PrintJsonObject (napi_env env, napi_callback_info info);
 napi_value SpeedTest_CPrimeCount (napi_env env, napi_callback_info info);
 napi_value MyC_CreateJsonObject(napi_env env, const napi_callback_info info);
 napi_value MyPromise1(napi_env env, napi_callback_info info);

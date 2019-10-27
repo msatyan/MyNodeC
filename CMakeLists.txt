@@ -13,6 +13,7 @@ include_directories(${CMAKE_JS_INC})
 file(GLOB SOURCE_FILES
             "src/addon_main.cpp"
             "src/HelloWorld1.cpp"
+            "src/HelloWorld2.cpp"
             "src/SpeedTest.cpp"
             "src/MyNativeObj.cpp"
             "src/MyCallback.cpp"
