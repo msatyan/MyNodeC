@@ -65,6 +65,17 @@ int ObjAddVal_double( napi_env env, napi_value obj, const char *key, double val 
     return(0);
 }
 
+bool isArrayType( napi_env env, napi_value val)
+{
+	napi_status status;
+	bool isArray=0;
+
+	// Check whether the object is an array
+	status = napi_is_array( env, val, &isArray);
+	assert(status == napi_ok);
+
+	return( isArray );
+}
 
 napi_valuetype MyPrintValueType( napi_env env, napi_value val, char *name )
 {
@@ -97,16 +108,11 @@ napi_valuetype MyPrintValueType( napi_env env, napi_value val, char *name )
 		printf( "\n %s: is of type napi_symbol", name);
 	} else if (valuetype == napi_object)
 	{
-		bool isArray=0;
-
-		// Check whether the object is an array
-		status = napi_is_array( env, val, &isArray);
-		assert(status == napi_ok);
-		if ( isArray ) {
-			printf( "\n %s: is an ARRAY: (the N-API type is napi_object)", name);
-		} else {
+		bool isArray = isArrayType( env, val );
+		if ( isArray )
+			printf( "\n %s: is an ARRAY: (type is napi_object)", name);
+		else
 			printf( "\n %s: is of type napi_object", name);
-		}
 
 	} else if (valuetype == napi_function)
 	{
@@ -122,4 +128,75 @@ napi_valuetype MyPrintValueType( napi_env env, napi_value val, char *name )
 
 
 	return( valuetype );
+}
+
+
+
+void MyPrintValue( napi_env env, napi_value val, int level)
+{
+	napi_status status;
+	napi_valuetype valuetype;
+
+	++level;
+
+	status = napi_typeof(env, val, &valuetype);
+	assert(status == napi_ok);
+
+	if (valuetype == napi_undefined)
+	{
+		printf( "\nUNDEFINED");
+	} else if (valuetype == napi_null)
+	{
+		printf( "\nNULL");
+	} else if (valuetype == napi_boolean)
+	{
+		bool cVal;
+		status =  napi_get_value_bool( env, val, &cVal);
+		assert(status == napi_ok);
+		printf( "\n%s", (cVal ? "true": "false") );
+
+	} else if (valuetype == napi_number)
+	{
+		double cVal;
+		status = napi_get_value_double( env, val, &cVal);
+		assert(status == napi_ok);
+		printf( "\n%lf", cVal );
+
+	} else if (valuetype == napi_string)
+	{
+		size_t NumBytes=0;
+
+		// get the length of the string, by setting NULL to the BUFF
+		status = napi_get_value_string_utf8( env, val, NULL, 0, &NumBytes);
+		assert(status == napi_ok);
+
+		char *pBuff = new char[ NumBytes+2 ];
+		status = napi_get_value_string_utf8( env, val, pBuff, NumBytes, &NumBytes);
+		*(pBuff + NumBytes) = 0;
+
+		printf( "\n%s", pBuff);
+		delete[] pBuff;
+
+	} else if (valuetype == napi_symbol)
+	{
+		printf( "\nSYMBOL");
+	} else if (valuetype == napi_object)
+	{
+		bool isArray = isArrayType( env, val );
+		if ( isArray )
+			printf( "\nARRAY");
+		else
+			printf( "\nOBJECT");
+
+	} else if (valuetype == napi_function)
+	{
+		printf( "\nFUNCTION");
+	} else if (valuetype == napi_external)
+	{
+		printf( "\nEXTERNAL");
+	} else
+	{
+		printf( "\n UNKNOWN");
+	}
+
 }

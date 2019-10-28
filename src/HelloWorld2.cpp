@@ -47,6 +47,7 @@ napi_value MyC_PrintJsonObject(napi_env env, napi_callback_info info)
 
     for( int i=0; i<(int)ArrayLen; ++i)
     {
+		napi_valuetype valuetype;
         napi_value PropertyName;
 		char *pName = NULL;
         napi_get_element( env, arg1_Properties, i, &PropertyName);
@@ -61,19 +62,19 @@ napi_value MyC_PrintJsonObject(napi_env env, napi_callback_info info)
 	    // printf("\n %s", buff);
         // MyPrintValueType(env, PropertyName, buff);
 
-		//  napi_get_property( env, napi_value object, napi_value key, napi_value* result);
-		napi_value result;
-		status = napi_get_property( env, arg1, PropertyName, &result );
+		napi_value val; // The value of the property.
+		status = napi_get_property( env, arg1, PropertyName, &val );
 		assert(status == napi_ok);
-		MyPrintValueType(env, result, pName );
+		valuetype = MyPrintValueType(env, val, pName );
+		MyPrintValue( env, val, 0);
+		printf("\n");
+
     }
 
 	Exit:
 	printf( "\n");
 	return (NULL);
 }
-
-
 
 
 
