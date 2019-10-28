@@ -189,14 +189,17 @@ function TestNativeCalls2() {
     console.log();
 
     const val1 = {
-        a: 'Hello World',
-        b: 'JavaScript',
-        c: 'object',
-        AnotherObj: { a1: 1, b1 : 2}
+        myString_1: 'Hello World',
+        myInt_1: 1257,
+        myBool_1: true,
+        myArray_1: [2, 4, 6, 9],
+        myNullVal_1: null,
+        myObj_1: { a1: 1, b1 : 2},
+        xyz: 'More testing'
     };
 
     myaddon.CPrintJsonObject(val1);
-    console.log('///////////');
+    // console.log('///////////');
     myaddon.CPrintJsonObject2(val1);
 }
 

@@ -33,26 +33,23 @@ napi_value MyC_PrintJsonObject(napi_env env, napi_callback_info info)
 	MyPrintValueType(env, arg1, "arg1");
 
 
-    // The C++ wraper usage for getting all properties
-	// Napi::Object obj = Napi::Object( env, arg1 );
-    // Napi::Array arr = obj.GetPropertyNames();
-
-    napi_value AllProperties;
-    status = napi_get_property_names( env, arg1, &AllProperties);
+    napi_value arg1_Properties;
+    status = napi_get_property_names( env, arg1, &arg1_Properties);
     assert(status == napi_ok);
 
-    MyPrintValueType(env, AllProperties, "AllProperties");
+    // MyPrintValueType(env, arg1_Properties, "arg1_Properties");
 
     // The API can be used to iterate over result using napi_get_array_length and napi_get_element.
     uint32_t ArrayLen=0;
-    status = napi_get_array_length( env, AllProperties, &ArrayLen);
+    status = napi_get_array_length( env, arg1_Properties, &ArrayLen);
     assert(status == napi_ok);
-    printf( "\n ArrayLen = %d", ArrayLen);
+    printf( "\n The arg1 has %d properties", ArrayLen);
 
     for( int i=0; i<(int)ArrayLen; ++i)
     {
         napi_value PropertyName;
-        napi_get_element( env, AllProperties, i, &PropertyName);
+		char *pName = NULL;
+        napi_get_element( env, arg1_Properties, i, &PropertyName);
 
         if (napi_get_value_string_utf8(env, PropertyName, (char *)&buff, sizeof(buff) - 2, &buff_len) != napi_ok)
         {
@@ -60,9 +57,15 @@ napi_value MyC_PrintJsonObject(napi_env env, napi_callback_info info)
             break;
         }
         buff[sizeof(buff) - 1] = '\0';
-	    printf("\n %s", buff);
+		pName = buff;
+	    // printf("\n %s", buff);
         // MyPrintValueType(env, PropertyName, buff);
 
+		//  napi_get_property( env, napi_value object, napi_value key, napi_value* result);
+		napi_value result;
+		status = napi_get_property( env, arg1, PropertyName, &result );
+		assert(status == napi_ok);
+		MyPrintValueType(env, result, pName );
     }
 
 	Exit:
@@ -101,20 +104,21 @@ napi_value MyCpp_PrintJsonObject(napi_env env, napi_callback_info info)
 
     // The C++ wraper usage for getting all properties
 	Napi::Object obj = Napi::Object( env, arg1 );
-    Napi::Array AllProperties = obj.GetPropertyNames();
+    Napi::Array arg1_Properties = obj.GetPropertyNames();
 
-    uint32_t ArrayLen=(int)AllProperties.Length();
-    printf( "\n ArrayLen = %d",  ArrayLen);
+    uint32_t ArrayLen=(int)arg1_Properties.Length();
+	printf( "\n The arg1 has %d properties", ArrayLen);
 
     for( int i=0; i<(int)ArrayLen; ++i)
     {
-        Napi::Value PropertyName = AllProperties.Get(i);
+        Napi::Value PropertyName = arg1_Properties.Get(i);
         std::string s = PropertyName.ToString().Utf8Value();
-         printf( "\n %s", s.c_str() );
+         printf( "\n %d   %s:", 1+i, s.c_str() );
     }
 
 	// Exit:
 	printf( "\n");
 	return (NULL);
 }
+
 

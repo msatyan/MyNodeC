@@ -66,8 +66,17 @@ int ObjAddVal_double( napi_env env, napi_value obj, const char *key, double val 
 }
 
 
-void MyPrintValueType2( napi_valuetype valuetype, char *name )
+napi_valuetype MyPrintValueType( napi_env env, napi_value val, char *name )
 {
+	napi_status status;
+	napi_valuetype valuetype;
+
+	if ( name == NULL)
+		name = "";
+
+	status = napi_typeof(env, val, &valuetype);
+	assert(status == napi_ok);
+
 	if (valuetype == napi_undefined)
 	{
 		printf( "\n %s: is of type napi_undefined", name);
@@ -88,7 +97,17 @@ void MyPrintValueType2( napi_valuetype valuetype, char *name )
 		printf( "\n %s: is of type napi_symbol", name);
 	} else if (valuetype == napi_object)
 	{
-		printf( "\n %s: is of type napi_object", name);
+		bool isArray=0;
+
+		// Check whether the object is an array
+		status = napi_is_array( env, val, &isArray);
+		assert(status == napi_ok);
+		if ( isArray ) {
+			printf( "\n %s: is an ARRAY: (the N-API type is napi_object)", name);
+		} else {
+			printf( "\n %s: is of type napi_object", name);
+		}
+
 	} else if (valuetype == napi_function)
 	{
 		printf( "\n %s: is of type napi_function", name);
@@ -100,17 +119,7 @@ void MyPrintValueType2( napi_valuetype valuetype, char *name )
 		printf( "\n %s: is of type %d ? (I don't know this enum type yet, is it new type ?)",
 		 name, valuetype);
 	}
-}
 
-void MyPrintValueType( napi_env env, napi_value val, char *name )
-{
-	napi_status status;
-	napi_valuetype valuetype;
 
-	if ( name == NULL)
-		name = "";
-
-	status = napi_typeof(env, val, &valuetype);
-	assert(status == napi_ok);
-	MyPrintValueType2( valuetype, name );
+	return( valuetype );
 }
