@@ -171,8 +171,9 @@ void MyPrintValue( napi_env env, napi_value val, int level)
 		assert(status == napi_ok);
 
 		char *pBuff = new char[ NumBytes+2 ];
-		status = napi_get_value_string_utf8( env, val, pBuff, NumBytes, &NumBytes);
-		*(pBuff + NumBytes) = 0;
+		// Need the one byte extra for the null termination
+		status = napi_get_value_string_utf8( env, val, pBuff, NumBytes+1, &NumBytes);
+		// *(pBuff + NumBytes) = 0;
 
 		printf( "\n%s", pBuff);
 		delete[] pBuff;
