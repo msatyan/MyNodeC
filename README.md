@@ -76,6 +76,27 @@ cmake-js build
 cmake-js build --debug
 ```
 
+### FYI: cmake-generators for VS
+- https://cmake.org/cmake/help/latest/manual/cmake-generators.7.html
+- https://cmake.org/cmake/help/latest/generator/Visual%20Studio%2016%202019.html
+```bash
+# Visual Studio Generators
+Visual Studio 14 2015
+Visual Studio 15 2017
+Visual Studio 16 2019
+
+# Example:
+# FYI: CMake 3.7.2 or higher needed for VS 2017
+cmake-js -G "Visual Studio 15 2017 Win64"
+cmake-js build --release -G "Visual Studio 15 2017 Win64"
+cmake-js build --debug   -G "Visual Studio 15 2017 Win64"
+
+# FYI: CMake 3.14 or higher needed for VS 2019
+cmake-js -G "Visual Studio 16 2019" -A Win32
+cmake-js -G "Visual Studio 16 2019" -A x64
+cmake-js -G "Visual Studio 16 2019" -A ARM
+cmake-js -G "Visual Studio 16 2019" -A ARM64
+```
 
 ### Run some sample
 The following **SpeedTest.js** sample program execute two functions one is a native function **SpeedTest_CPrimeCount()** and the other one is a pure JavaScript function **SpeedTest_JSPrimeCount()**. Both the functions are doing the same operation, calculating number of prime numbers between a given two numbers (say X=2 and Y=1000). Then the sample module compare the time taken by this two functions.

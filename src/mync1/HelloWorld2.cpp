@@ -12,9 +12,7 @@ napi_value MyC_PrintJsonObject(napi_env env, napi_callback_info info)
 	const size_t ArgvArraySize = 2;
 	size_t argc = ArgvArraySize; // IN & Out
 	napi_value argv[ArgvArraySize];
-	size_t buff_len = 0;
 	napi_value jsthis;
-    char buff[1024];
     napi_value arg1;
 
 	// napi_get_cb_info(env, info, &argc, argv, NULL, NULL);
@@ -27,49 +25,19 @@ napi_value MyC_PrintJsonObject(napi_env env, napi_callback_info info)
 
 	printf( "\n");
 	printf( "\n argc = %d", (int)argc);
-
-
-    arg1 = argv[0];
-	MyPrintValueType(env, arg1, "arg1");
-
-
-    napi_value arg1_Properties;
-    status = napi_get_property_names( env, arg1, &arg1_Properties);
-    assert(status == napi_ok);
-
-    // MyPrintValueType(env, arg1_Properties, "arg1_Properties");
-
-    // The API can be used to iterate over result using napi_get_array_length and napi_get_element.
-    uint32_t ArrayLen=0;
-    status = napi_get_array_length( env, arg1_Properties, &ArrayLen);
-    assert(status == napi_ok);
-    printf( "\n The arg1 has %d properties", ArrayLen);
-
-    for( int i=0; i<(int)ArrayLen; ++i)
-    {
+	arg1 = argv[0];
+	{
 		napi_valuetype valuetype;
-        napi_value PropertyName;
-		char *pName = NULL;
-        napi_get_element( env, arg1_Properties, i, &PropertyName);
+		status = napi_typeof(env, arg1, &valuetype);
+		if ( valuetype == napi_object && isArrayType( env, arg1 ) == 0)
+		{
+			printf( "\n arg1: is of type napi_object \n");
+			printf( "\n ================================ \n");
 
-        if (napi_get_value_string_utf8(env, PropertyName, (char *)&buff, sizeof(buff) - 2, &buff_len) != napi_ok)
-        {
-            napi_throw_error(env, "EINVAL", "Expected string");
-            break;
-        }
-        buff[sizeof(buff) - 1] = '\0';
-		pName = buff;
-	    // printf("\n %s", buff);
-        // MyPrintValueType(env, PropertyName, buff);
-
-		napi_value val; // The value of the property.
-		status = napi_get_property( env, arg1, PropertyName, &val );
-		assert(status == napi_ok);
-		valuetype = MyPrintValueType(env, val, pName );
-		MyPrintValue( env, val, 0);
-		printf("\n");
-
-    }
+			// This is an object
+			MyPrintObj( env, arg1, 0, 0);
+		}
+	}
 
 	Exit:
 	printf( "\n");
@@ -99,9 +67,7 @@ napi_value MyCpp_PrintJsonObject(napi_env env, napi_callback_info info)
 	printf( "\n");
 	printf( "\n argc = %d", (int)argc);
 
-
     arg1 = argv[0];
-	MyPrintValueType(env, arg1, "arg1");
 
     // The C++ wraper usage for getting all properties
 	Napi::Object obj = Napi::Object( env, arg1 );

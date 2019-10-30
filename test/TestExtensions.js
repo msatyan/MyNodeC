@@ -179,7 +179,7 @@ function TestNativeCalls2() {
         myNum_1: 1257,
         myNum_2: 1257.28,
         myBool_1: true,
-        myArray_1: [2, 4, 6, 9],
+        myArray_1: [2, 4, 6, 9, { a1: 10, b1 : 20.34, c1: 30}],
         myNullVal_1: null,
         myObj_1: { a1: 1, b1 : 2},
         xyz: 'for more testing!'

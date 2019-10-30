@@ -11,11 +11,30 @@
         return(NULL);\
     }
 
+
+enum myobj_valuetype {
+  myobj_undefined,
+  myobj_null,
+  myobj_boolean,
+  myobj_number,
+  myobj_string,
+  myobj_symbol,
+  myobj_object,
+  myobj_function,
+  myobj_external,
+  myobj_unknown_yet,
+  myobj_array
+};
+
+
 int ObjAddVal_utf8(  napi_env env, napi_value obj, const char *key, const char *val);
 int ObjAddVal_Int32( napi_env env, napi_value obj, const char *key, int val );
 int ObjAddVal_double( napi_env env, napi_value obj, const char *key, double val );
-napi_valuetype MyPrintValueType( napi_env env, napi_value val, char *name );
-void MyPrintValue( napi_env env, napi_value val, int level);
+myobj_valuetype GetMyValueType( napi_env env, napi_value val );
+char *GetMyValueTypeName( myobj_valuetype valuetype );
+void MyPrintValue( napi_env env, napi_value val);
+int MyPrintObj( napi_env env, napi_value obj, int level, int print_obj_type);
+int MyPrintArray( napi_env env, napi_value arr, int level, int print_obj_type);
 bool isArrayType( napi_env env, napi_value val);
 
 #endif  // _EXTUTIL_H_
