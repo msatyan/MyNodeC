@@ -11,18 +11,18 @@ string(REPLACE "\"" "" NODE_ADDON_API_DIR ${NODE_ADDON_API_DIR})
 include_directories(${CMAKE_JS_INC})
 
 file(GLOB SOURCE_FILES
-            "src/addon_main.cpp"
-            "src/HelloWorld1.cpp"
-            "src/HelloWorld2.cpp"
-            "src/SpeedTest.cpp"
-            "src/MyNativeObj.cpp"
-            "src/MyCallback.cpp"
-            "src/MyPromise1.cpp"
-            "src/MyEventEmit.cpp"
-            "src/cpp_util.cpp"
-            "src/extutil.cpp"
-            "src/addon_main_4cpp.cpp"
-            "src/*.h")
+            "src/mync1/addon_main.cpp"
+            "src/mync1/HelloWorld1.cpp"
+            "src/mync1/HelloWorld2.cpp"
+            "src/mync1/SpeedTest.cpp"
+            "src/mync1/MyNativeObj.cpp"
+            "src/mync1/MyCallback.cpp"
+            "src/mync1/MyPromise1.cpp"
+            "src/mync1/MyEventEmit.cpp"
+            "src/mync1/cpp_util.cpp"
+            "src/mync1/extutil.cpp"
+            "src/mync1/addon_main_4cpp.cpp"
+            "src/include/*.h")
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
 target_include_directories(${PROJECT_NAME} PRIVATE ${NODE_ADDON_API_DIR})

@@ -1,5 +1,5 @@
 
-#include "MyEventEmit.h"
+#include "../include/MyEventEmit.h"
 #include <node_api.h>
 
 napi_value MyNodeAddonApiInitSession1( napi_env c_env, napi_value c_exports)

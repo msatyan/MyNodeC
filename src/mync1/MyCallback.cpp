@@ -1,7 +1,7 @@
 #include <node_api.h>
 #include <assert.h>
 
-#include "cpp_util.h"
+#include "../include/cpp_util.h"
 
 napi_value CMyCallback1(napi_env env, const napi_callback_info info)
 {

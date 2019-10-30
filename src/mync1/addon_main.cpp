@@ -27,8 +27,8 @@
 // napi_value created from the string passed in as utf8Name.
 
 
-#include "addon_api.h"
-#include "addon_api_4cpp.h"
+#include "../include/addon_api.h"
+#include "../include/addon_api_4cpp.h"
 
 napi_value Init(napi_env env, napi_value exports)
 {

@@ -166,20 +166,6 @@ function TestPromise() {
 }
 
 
-function Main() {
-    TestNativeCalls();
-    // SppdTest(2, 5000);
-
-    TestMyNativeObject();
-
-    TestCallback();
-
-    TestPromise();
-}
-
-// Main();
-
-
 //////////////////////////////
 function TestNativeCalls2() {
     console.log(' ');
@@ -196,13 +182,28 @@ function TestNativeCalls2() {
         myArray_1: [2, 4, 6, 9],
         myNullVal_1: null,
         myObj_1: { a1: 1, b1 : 2},
-        xyz: 'for more testing'
+        xyz: 'for more testing!'
     };
 
     myaddon.CPrintJsonObject(val1);
-    // console.log('///////////');
-    myaddon.CPrintJsonObject2(val1);
+    // myaddon.CPrintJsonObject2(val1);
 }
 
-TestNativeCalls2();
 
+function Main() {
+    TestNativeCalls();
+    // SppdTest(2, 5000);
+
+    TestMyNativeObject();
+
+    TestCallback();
+
+    TestPromise();
+
+    // TestNativeCalls2();
+}
+
+// Main();
+
+
+TestNativeCalls2();
