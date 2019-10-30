@@ -1,5 +1,5 @@
 #include <node_api.h>
-#include "../include/MyNativeObj.h"
+#include "MyNativeObj.h"
 #include <assert.h>
 
 

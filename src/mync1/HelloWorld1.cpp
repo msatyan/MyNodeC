@@ -1,8 +1,8 @@
 
 
 # include <assert.h>
-#include "../include/addon_api.h"
-#include "../include/extutil.h"
+#include "addon_api.h"
+#include "extutil.h"
 
 // Call a C Function from JavaScript
 napi_value MyC_SayHello(napi_env env, napi_callback_info info)

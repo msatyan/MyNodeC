@@ -1,6 +1,13 @@
 project (mync1)
 cmake_minimum_required(VERSION 3.10)
 
+set(CMAKE_CXX_STANDARD 11)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+set(CMAKE_CXX_EXTENSIONS OFF)
+
+set(mync1_include_dir "${PROJECT_SOURCE_DIR}/src/include")
+set(mync1_source_dir "${PROJECT_SOURCE_DIR}/src/mync1")
+
 # Include N-API wrappers
 execute_process(COMMAND node -p "require('node-addon-api').include"
         WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}
@@ -11,22 +18,36 @@ string(REPLACE "\"" "" NODE_ADDON_API_DIR ${NODE_ADDON_API_DIR})
 include_directories(${CMAKE_JS_INC})
 
 file(GLOB SOURCE_FILES
-            "src/mync1/addon_main.cpp"
-            "src/mync1/HelloWorld1.cpp"
-            "src/mync1/HelloWorld2.cpp"
-            "src/mync1/SpeedTest.cpp"
-            "src/mync1/MyNativeObj.cpp"
-            "src/mync1/MyCallback.cpp"
-            "src/mync1/MyPromise1.cpp"
-            "src/mync1/MyEventEmit.cpp"
-            "src/mync1/cpp_util.cpp"
-            "src/mync1/extutil.cpp"
-            "src/mync1/addon_main_4cpp.cpp"
-            "src/include/*.h")
+        "${mync1_include_dir}/addon_api.h"
+        "${mync1_include_dir}/addon_api_4cpp.h"
+        "${mync1_include_dir}/cpp_util.h"
+        "${mync1_include_dir}/extutil.h"
+        "${mync1_include_dir}/MyEventEmit.h"
+        "${mync1_include_dir}/MyNativeObj.h"
+        "${mync1_source_dir}/addon_main.cpp"
+        "${mync1_source_dir}/addon_main_4cpp.cpp"
+        "${mync1_source_dir}/cpp_util.cpp"
+        "${mync1_source_dir}/extutil.cpp"
+        "${mync1_source_dir}/HelloWorld1.cpp"
+        "${mync1_source_dir}/HelloWorld2.cpp"
+        "${mync1_source_dir}/MyCallback.cpp"
+        "${mync1_source_dir}/MyEventEmit.cpp"
+        "${mync1_source_dir}/MyNativeObj.cpp"
+        "${mync1_source_dir}/MyPromise1.cpp"
+        "${mync1_source_dir}/SpeedTest.cpp"
+)
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
-target_include_directories(${PROJECT_NAME} PRIVATE ${NODE_ADDON_API_DIR})
+target_include_directories(${PROJECT_NAME}
+    PUBLIC
+        ${PROJECT_SOURCE_DIR}/src/include
+    PRIVATE
+        ${NODE_ADDON_API_DIR}
+        ${CMAKE_JS_INC}
+)
+
 set_target_properties(${PROJECT_NAME} PROPERTIES PREFIX "" SUFFIX ".node")
+set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS=1)
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB})
 

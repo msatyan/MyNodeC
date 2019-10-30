@@ -1,5 +1,5 @@
-#include "../include/addon_api.h"
-#include "../include/cpp_util.h"
+#include "addon_api.h"
+#include "cpp_util.h"
 
 
 //////////////////////////////////////////////////////////////

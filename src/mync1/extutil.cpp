@@ -1,4 +1,4 @@
-#include "../include/addon_api.h"
+#include "addon_api.h"
 # include <assert.h>
 
 int ObjAddVal_utf8(napi_env env, napi_value obj, const char *key, const char *val)

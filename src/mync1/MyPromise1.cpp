@@ -8,7 +8,7 @@
 #include <node_api.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include "../include/cpp_util.h"
+#include "cpp_util.h"
 
 
 // A data structure to exchange information during async operation

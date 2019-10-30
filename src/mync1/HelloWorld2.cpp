@@ -1,7 +1,7 @@
 
 # include <assert.h>
 #include <napi.h>
-#include "../include/extutil.h"
+#include "extutil.h"
 
 
 // Receive a JsonObject parameter from JavaScript, and interpret it at C
