@@ -185,7 +185,11 @@ function TestNativeCalls2() {
         xyz: 'for more testing!'
     };
 
-    myaddon.CPrintJsonObject(val1);
+    let dbg_on = false;
+    myaddon.CPrintJsonObject(val1, dbg_on);
+
+    dbg_on = true;
+    myaddon.CPrintJsonObject(val1, dbg_on);
     // myaddon.CPrintJsonObject2(val1);
 }
 

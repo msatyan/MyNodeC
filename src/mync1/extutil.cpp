@@ -2,6 +2,15 @@
 #include "extutil.h"
 # include <assert.h>
 
+
+void Pad(int level)
+{
+	const char *pad = "  ";
+	for( int i=0; i<level; ++i)
+		printf("%s", pad);
+}
+
+
 int ObjAddVal_utf8(napi_env env, napi_value obj, const char *key, const char *val)
 {
     napi_status status;
@@ -157,16 +166,16 @@ void MyPrintValue( napi_env env, napi_value val)
 
 	if (valuetype == napi_undefined)
 	{
-		printf( "UNDEFINED,");
+		printf( "UNDEFINED");
 	} else if (valuetype == napi_null)
 	{
-		printf( "NULL,");
+		printf( "NULL");
 	} else if (valuetype == napi_boolean)
 	{
 		bool cVal;
 		status =  napi_get_value_bool( env, val, &cVal);
 		assert(status == napi_ok);
-		printf( "%s,", (cVal ? "true": "false") );
+		printf( "%s", (cVal ? "true": "false") );
 
 	} else if (valuetype == napi_number)
 	{
@@ -175,7 +184,7 @@ void MyPrintValue( napi_env env, napi_value val)
 		assert(status == napi_ok);
 
 		// g: the shortest representation: %e or %f to avoid trailing zeros.
-		printf( "%lg,", cVal );
+		printf( "%lg", cVal );
 
 	} else if (valuetype == napi_string)
 	{
@@ -190,34 +199,34 @@ void MyPrintValue( napi_env env, napi_value val)
 		status = napi_get_value_string_utf8( env, val, pBuff, NumBytes+1, &NumBytes);
 		// *(pBuff + NumBytes) = 0;
 
-		printf( "%s,", pBuff);
+		printf( "'%s'", pBuff);
 		delete[] pBuff;
 
 	} else if (valuetype == napi_symbol)
 	{
-		printf( "SYMBOL,");
+		printf( "SYMBOL");
 	} else if (valuetype == napi_object)
 	{
 		bool isArray = isArrayType( env, val );
 		if ( isArray )
-			printf( "ARRAY,");
+			printf( "ARRAY");
 		else
-			printf( "OBJECT,");
+			printf( "OBJECT");
 
 	} else if (valuetype == napi_function)
 	{
-		printf( "FUNCTION,");
+		printf( "FUNCTION");
 	} else if (valuetype == napi_external)
 	{
-		printf( "EXTERNAL,");
+		printf( "EXTERNAL");
 	} else
 	{
-		printf( "UNKNOWN,");
+		printf( "UNKNOWN");
 	}
 }
 
 
-int MyPrintObj( napi_env env, napi_value obj, int level, int print_obj_type)
+int MyPrintObj( napi_env env, napi_value obj, int level, int dbg_flag)
 {
 	napi_status status;
 	size_t buff_len = 0;
@@ -232,9 +241,21 @@ int MyPrintObj( napi_env env, napi_value obj, int level, int print_obj_type)
     uint32_t ArrayLen=0;
     status = napi_get_array_length( env, obj_Properties, &ArrayLen);
     assert(status == napi_ok);
-    printf( " // level=%d, properties=%d", level, ArrayLen);
 
-	printf( "\n{");
+	if ( dbg_flag == 1)
+	{
+		printf( "\n" );
+		Pad(level);
+    	printf( "// level=%d, properties=%d\n", level, ArrayLen);
+		Pad(level);
+	}
+	else if ( level == 1)
+	{
+		Pad(level);
+	}
+
+	printf( "{");
+
     for( int i=0; i<(int)ArrayLen; ++i)
     {
         napi_value PropertyName;
@@ -258,31 +279,39 @@ int MyPrintObj( napi_env env, napi_value obj, int level, int print_obj_type)
 		val_type =  GetMyValueType( env, val );
 		vtype_name = GetMyValueTypeName( val_type );
 
+		printf("\n");
+		Pad(level+1);
 		// Preint Key
-		if ( print_obj_type == 1)
-			printf("\n %s(%s): ", pName, vtype_name);
+		if ( dbg_flag == 1)
+			printf("%s(%s): ", pName, vtype_name);
 		else
-			printf("\n %s: ", pName );
+			printf("%s: ", pName );
 
 		// Preint value
 		if ( val_type == myobj_object) {
-			MyPrintObj( env, val, level, print_obj_type);
+			MyPrintObj( env, val, level, dbg_flag);
 		} else if ( val_type == myobj_array) {
-			MyPrintArray( env, val, level, print_obj_type);
+			MyPrintArray( env, val, level, dbg_flag);
 		} else {
 			MyPrintValue( env, val );
 		}
+
+		if (i<(int)(ArrayLen-1)) {
+			printf(", ");
+		}
     }
-	if ( level > 1)
-		printf( "\n},");
-	else
-		printf( "\n}");
+	// if ( level > 1)
+	// 	printf( "\n}");
+	// else
+	printf( "\n");
+	Pad(level);
+	printf( "}");
 
 	return(level);
 }
 
 
-int MyPrintArray( napi_env env, napi_value arr, int level, int print_obj_type)
+int MyPrintArray( napi_env env, napi_value arr, int level, int dbg_flag)
 {
 	napi_status status;
 	uint32_t ArrayLen=0;
@@ -301,14 +330,20 @@ int MyPrintArray( napi_env env, napi_value arr, int level, int print_obj_type)
 
 		val_type = GetMyValueType( env, arr_val );
 		if ( val_type == myobj_object) {
-			MyPrintObj( env, arr_val, level, print_obj_type);
+			MyPrintObj( env, arr_val, level, dbg_flag);
 		} else if ( val_type == myobj_array) {
-			MyPrintArray( env, arr_val, level, print_obj_type);
+			MyPrintArray( env, arr_val, level, dbg_flag);
 		} else {
 			MyPrintValue( env, arr_val );
 		}
+
+		if (i<(int)(ArrayLen-1)) {
+			printf(", ");
+		}
 	}
-	printf( "\n],");
+	printf( "\n");
+	Pad(level);
+	printf( "]");
 	return(0);
 }
 

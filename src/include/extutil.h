@@ -33,8 +33,8 @@ int ObjAddVal_double( napi_env env, napi_value obj, const char *key, double val 
 myobj_valuetype GetMyValueType( napi_env env, napi_value val );
 char *GetMyValueTypeName( myobj_valuetype valuetype );
 void MyPrintValue( napi_env env, napi_value val);
-int MyPrintObj( napi_env env, napi_value obj, int level, int print_obj_type);
-int MyPrintArray( napi_env env, napi_value arr, int level, int print_obj_type);
+int MyPrintObj( napi_env env, napi_value obj, int level, int dbg_flag);
+int MyPrintArray( napi_env env, napi_value arr, int level, int dbg_flag);
 bool isArrayType( napi_env env, napi_value val);
 
 #endif  // _EXTUTIL_H_
