@@ -51,4 +51,5 @@ set_target_properties(${PROJECT_NAME} PROPERTIES POSITION_INDEPENDENT_CODE ON)
 target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS=1)
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB})
 
-
+# Define NAPI_VERSION
+add_definitions(-DNAPI_VERSION=3)
