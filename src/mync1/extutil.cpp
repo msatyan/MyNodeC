@@ -129,27 +129,27 @@ char *GetMyValueTypeName( myobj_valuetype valuetype )
 	char *name = NULL;
 
 	if (valuetype == myobj_undefined) {
-		name = "undefined";
+		name = (char *)"undefined";
 	} else if (valuetype == myobj_null)	{
-		name = "null";
+		name = (char *)"null";
 	} else if (valuetype == myobj_boolean) {
-		name = "boolean";
+		name = (char *)"boolean";
 	} else if (valuetype == myobj_number) {
-		name = "number";
+		name = (char *)"number";
 	} else if (valuetype == myobj_string) {
-		name = "string";
+		name = (char *)"string";
 	} else if (valuetype == myobj_symbol) {
-		name = "symbol";
+		name = (char *)"symbol";
 	} else if (valuetype == myobj_object) {
-		name = "object";
+		name = (char *)"object";
 	} else if (valuetype == myobj_array) {
-		name = "array";
+		name = (char *)"array";
 	} else if (valuetype == myobj_function)	{
-		name = "function";
+		name = (char *)"function";
 	} else if (valuetype == myobj_external)	{
-		name = "external";
+		name = (char *)"external";
 	} else {
-		name = "unknown";
+		name = (char *)"unknown";
 	}
 
 	return( name );
