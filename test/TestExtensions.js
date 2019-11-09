@@ -166,6 +166,29 @@ function TestPromise() {
 }
 
 
+
+async function TestPromiseWithAsync() {
+    // Send and receive values
+    console.log();
+    const x = 8;
+    const y = 100;
+
+    console.log("Start: TestPromise()");
+    // const prime = myaddon.SpeedTest_CPrimeCount(x, y);
+    // console.log(`Prime numbers between ${x} and ${y} is ${prime}`);
+
+    // Example of a Promise
+    try {
+        let pCount =  await myaddon.MyPromise1SpeedTest(x, y);
+        console.log(`MyPromise1SpeedTest ${pCount}`);
+    }
+    catch(err) {
+        console.log(err);
+    }
+}
+
+
+
 //////////////////////////////
 function PrintJsonObj() {
     console.log(' ');
@@ -198,13 +221,14 @@ function PrintJsonObj() {
 
 function Main() {
     TestNativeCalls();
-    // SppdTest(2, 5000);
+    SppdTest(2, 5000);
 
     TestMyNativeObject();
-
     TestCallback();
-
     TestPromise();
+    console.log("-------TestPromiseWithAsync------");
+    TestPromiseWithAsync();
+    console.log("After calling: TestPromiseWithAsync()");
 
     PrintJsonObj();
 }

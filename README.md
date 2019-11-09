@@ -47,7 +47,7 @@ This example try to mix and match both **N-API** and **node-addon-api** in the s
 ### Prerequisite
 - [node.js](https://nodejs.org/en/) (v10 or higher)
 - [CMake](https://cmake.org/) (v3.10 or higher)
-- [CMake.js](https://github.com/cmake-js/cmake-js) (v6 or higher)
+- [cmake-js](https://github.com/cmake-js/cmake-js) (v6 or higher)
 
 ```bash
 # install CMake.js
