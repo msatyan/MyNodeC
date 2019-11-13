@@ -2,7 +2,6 @@
 #include "MyNativeObj.h"
 #include <assert.h>
 
-
 #define DECLARE_NAPI_METHOD(name, func)         \
     {                                           \
         name, 0, func, 0, 0, 0, napi_default, 0 \
@@ -38,9 +37,13 @@ napi_value MyObject::Init(napi_env env, napi_value exports)
         DECLARE_NAPI_METHOD("multiply", Multiply),
     };
 
-    status =  napi_define_class(env, "MyObject", NAPI_AUTO_LENGTH, New, nullptr, 3, properties, &cons);
+    size_t property_count = sizeof(properties)/sizeof(napi_property_descriptor);
+    status =  napi_define_class(env, "MyObject", NAPI_AUTO_LENGTH, New,
+                                nullptr, property_count, properties, &cons);
     assert(status == napi_ok);
 
+    // References to objects with a lifespan longer than that of the native method
+    // Any count greater than 0 will prevent the object from being collected.
     status = napi_create_reference(env, cons, 1, &constructor);
     assert(status == napi_ok);
 
@@ -109,6 +112,7 @@ napi_value MyObject::New(napi_env env, napi_callback_info info)
         assert(status == napi_ok);
 
         napi_value instance;
+        // Create a new JavaScript Object, and pass the argument to it constructor
         status = napi_new_instance(env, cons, argc, argv, &instance);
         assert(status == napi_ok);
 
@@ -211,6 +215,7 @@ napi_value MyObject::Multiply(napi_env env, napi_callback_info info)
     assert(status == napi_ok);
 
     napi_value instance;
+    // Create a new JavaScript Object, and pass the argument to it constructor
     status = napi_new_instance(env, cons, kArgCount, argv, &instance);
     assert(status == napi_ok);
 
