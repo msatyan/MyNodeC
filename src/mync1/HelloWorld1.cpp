@@ -58,7 +58,7 @@ napi_value MyC_Print(napi_env env, napi_callback_info info)
 }
 
 
-napi_value MyC_CreateJsonObject(napi_env env, const napi_callback_info info)
+napi_value CMyCreateJSObject(napi_env env, const napi_callback_info info)
 {
 	// Specifies the size of the argv array and receives the actual count of arguments
 	const size_t ArgvArraySize = 1;

@@ -5,7 +5,7 @@
 
 
 // Receive a JsonObject parameter from JavaScript, and interpret it at C
-napi_value MyC_PrintJsonObject(napi_env env, napi_callback_info info)
+napi_value CMyPrintJSObject(napi_env env, napi_callback_info info)
 {
 	napi_status status;
 	// Specifies the size of the argv array and receives the actual count of arguments
@@ -64,7 +64,7 @@ napi_value MyC_PrintJsonObject(napi_env env, napi_callback_info info)
 
 
 // Receive a JsonObject parameter from JavaScript, and interpret it at C
-napi_value MyCpp_PrintJsonObject(napi_env env, napi_callback_info info)
+napi_value CppMyPrintJSObject(napi_env env, napi_callback_info info)
 {
 	napi_status status;
 	// Specifies the size of the argv array and receives the actual count of arguments

@@ -50,12 +50,12 @@ napi_value Init(napi_env env, napi_value exports)
 	if ((status = napi_set_named_property(env, exports, "CPrint", fn)) != napi_ok)
 		return NULL;
 
-	if ((status = napi_create_function(env, "CPrintJsonObject", NAPI_AUTO_LENGTH, MyC_PrintJsonObject, NULL, &fn)) != napi_ok)
+	if ((status = napi_create_function(env, "CPrintJsonObject", NAPI_AUTO_LENGTH, CMyPrintJSObject, NULL, &fn)) != napi_ok)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "CPrintJsonObject", fn)) != napi_ok)
 		return NULL;
 
-	if ((status = napi_create_function(env, "CPrintJsonObject2", NAPI_AUTO_LENGTH, MyCpp_PrintJsonObject, NULL, &fn)) != napi_ok)
+	if ((status = napi_create_function(env, "CPrintJsonObject2", NAPI_AUTO_LENGTH, CppMyPrintJSObject, NULL, &fn)) != napi_ok)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "CPrintJsonObject2", fn)) != napi_ok)
 		return NULL;
@@ -65,9 +65,9 @@ napi_value Init(napi_env env, napi_value exports)
 	if ((status = napi_set_named_property(env, exports, "SpeedTest_CPrimeCount", fn)) != napi_ok)
 		return NULL;
 
-	if ((status = napi_create_function(env, "CreateJsonObject", NAPI_AUTO_LENGTH, MyC_CreateJsonObject, NULL, &fn)) != napi_ok)
+	if ((status = napi_create_function(env, "CreateJSObject", NAPI_AUTO_LENGTH, CMyCreateJSObject, NULL, &fn)) != napi_ok)
 		return NULL;
-	if ((status = napi_set_named_property(env, exports, "CreateJsonObject", fn)) != napi_ok)
+	if ((status = napi_set_named_property(env, exports, "CreateJSObject", fn)) != napi_ok)
 		return NULL;
 
 	if ((status = napi_create_function(env, "MyPromise1SpeedTest", NAPI_AUTO_LENGTH, MyPromise1, NULL, &fn)) != napi_ok)
@@ -83,6 +83,10 @@ napi_value Init(napi_env env, napi_value exports)
 	if ((status = napi_create_function(env, "MyCallback2", NAPI_AUTO_LENGTH, CMyCallback2, NULL, &fn)) != napi_ok)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "MyCallback2", fn)) != napi_ok)
+		return NULL;
+	if ((status = napi_create_function(env, "MyArrayBuffSum", NAPI_AUTO_LENGTH, CArrayBuffSum, NULL, &fn)) != napi_ok)
+		return NULL;
+	if ((status = napi_set_named_property(env, exports, "MyArrayBuffSum", fn)) != napi_ok)
 		return NULL;
 
 	MyObject::Init(env, exports);

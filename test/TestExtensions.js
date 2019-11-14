@@ -106,12 +106,12 @@ function TestNativeCalls() {
 
     // Get a Json Object from C function
     console.log();
-    var obj1 = myaddon.CreateJsonObject();
-    console.log("CreateJsonObject-1 returned : ", obj1);
+    var obj1 = myaddon.CreateJSObject();
+    console.log("CreateJSObject-1 returned : ", obj1);
 
     console.log();
-    obj1 = myaddon.CreateJsonObject("Name given by JS function");
-    console.log("CreateJsonObject-2 returned : ", obj1);
+    obj1 = myaddon.CreateJSObject("Name given by JS function");
+    console.log("CreateJSObject-2 returned : ", obj1);
 }
 
 

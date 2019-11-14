@@ -29,12 +29,13 @@ file(GLOB SOURCE_FILES
         "${mync1_source_dir}/cpp_util.cpp"
         "${mync1_source_dir}/extutil.cpp"
         "${mync1_source_dir}/HelloWorld1.cpp"
-        "${mync1_source_dir}/HelloWorld2.cpp"
+        "${mync1_source_dir}/MyPrintJSObject.cpp"
         "${mync1_source_dir}/MyCallback.cpp"
         "${mync1_source_dir}/MyEventEmit.cpp"
         "${mync1_source_dir}/MyNativeObj.cpp"
         "${mync1_source_dir}/MyPromise1.cpp"
         "${mync1_source_dir}/SpeedTest.cpp"
+        "${mync1_source_dir}/ArrayBuff.cpp"
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
