@@ -92,10 +92,14 @@ cmake-js build --release -G "Visual Studio 15 2017 Win64"
 cmake-js build --debug   -G "Visual Studio 15 2017 Win64"
 
 # FYI: CMake 3.14 or higher needed for VS 2019
+# FYI: CMake 3.14 or higher needed for VS 2019
 cmake-js -G "Visual Studio 16 2019" -A Win32
 cmake-js -G "Visual Studio 16 2019" -A x64
 cmake-js -G "Visual Studio 16 2019" -A ARM
 cmake-js -G "Visual Studio 16 2019" -A ARM64
+
+# or if debug then use -D flag, for example
+cmake-js -D -G "Visual Studio 16 2019" -A x64
 ```
 
 ### Run some sample

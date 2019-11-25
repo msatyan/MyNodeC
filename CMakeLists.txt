@@ -1,6 +1,18 @@
 project (mync1)
 cmake_minimum_required(VERSION 3.10)
 
+# if (MSVC)
+#     # warning level 4 and all warnings as errors
+#     add_compile_options(/W4 /WX)
+# else()
+#     # lots of warnings and all warnings as errors
+#     add_compile_options(-Wall -Wextra -pedantic -Werror)
+# endif()
+
+# When compiling in Debug mode, it defines DEBUG (available Cmake >= 3.0)
+add_compile_options("$<$<CONFIG:DEBUG>:-DDEBUG>")
+
+
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
