@@ -42,6 +42,7 @@ This example try to mix and match both **N-API** and **node-addon-api** in the s
 - Callback
 - Promise
 - Event Emitter
+- Array Buff
 
 
 ### Prerequisite
