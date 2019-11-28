@@ -1,7 +1,12 @@
 #include <assert.h>
 #include "addon_api.h"
+#include "cpp_util.h"
 #include "stdio.h"
 
+
+// Receive an ArrayBuffer from JavaScript
+// Print the values of ArrayBuffer and then modify value at native layer.
+// Then JavaScript print the modified value
 napi_value CArrayBuffSum(napi_env env, napi_callback_info info)
 {
     napi_status status;
@@ -55,4 +60,115 @@ napi_value CArrayBuffSum(napi_env env, napi_callback_info info)
     }
 
     return (rcValue);
+}
+
+
+
+
+/////////////////////////////////////////////////////////////////////////
+// Create ArrayBuffer at native layer and return it to JavaScript
+// It take two parameters 's' and 'm' and return an array buffer.
+// s is the size of the int32 array
+// m multiplication factor against the index value.
+napi_value CArrayBuffer_GetMultiplicationTable(napi_env env, napi_callback_info info)
+{
+	napi_status status;
+	napi_value argv[2];
+
+	// [in-out] argc: Specifies the size of the provided argv array and
+	// receives the actual count of arguments
+	size_t argc = 2;
+	int32_t s = 0;
+	int32_t m = 0;
+
+	napi_get_cb_info(env, info, &argc, argv, NULL, NULL);
+	if (argc != 2)
+	{
+		napi_throw_error(env, "EINVAL", "arguments missmatch");
+		return NULL;
+	}
+
+    // First parm is size of the array
+	if ((status = napi_get_value_int32(env, argv[0], &s)) != napi_ok)
+	{
+		napi_throw_error(env, "EINVAL", "parm 1: int32 expected");
+		return NULL;
+	}
+
+    // Second parameter multiplication factor.
+	if ((status = napi_get_value_int32(env, argv[1], &m)) != napi_ok)
+	{
+		napi_throw_error(env, "EINVAL", "parm 2: int32 expected");
+		return NULL;
+	}
+
+	napi_value rcValue;
+    int32_t *buff_data = NULL;
+    // Create an array buffer
+    status = napi_create_arraybuffer(env, (s * sizeof(int32_t)), (void **)&buff_data, &rcValue);
+    assert(status == napi_ok);
+    for( int i=0; i<s; ++i )
+    {
+        *(buff_data + i)  = i * m;
+    }
+
+	return (rcValue);
+}
+
+
+
+/////////////////////////////////////////////////////////////////////////
+// Create TypedArray of Int32 at native layer and return it to JavaScript
+// It take two parameters 's' and 'm' and return an array buffer.
+// s is the size of the int32 array
+// m multiplication factor against the index value.
+napi_value CInt32TypedArray_GetMultiplicationTable(napi_env env, napi_callback_info info)
+{
+	napi_status status;
+	napi_value argv[2];
+
+	// [in-out] argc: Specifies the size of the provided argv array and
+	// receives the actual count of arguments
+	size_t argc = 2;
+	int32_t s = 0;
+	int32_t m = 0;
+
+	napi_get_cb_info(env, info, &argc, argv, NULL, NULL);
+	if (argc != 2)
+	{
+		napi_throw_error(env, "EINVAL", "arguments missmatch");
+		return NULL;
+	}
+
+    // First parm is size of the array
+	if ((status = napi_get_value_int32(env, argv[0], &s)) != napi_ok)
+	{
+		napi_throw_error(env, "EINVAL", "parm 1: int32 expected");
+		return NULL;
+	}
+
+    // Second parameter multiplication factor.
+	if ((status = napi_get_value_int32(env, argv[1], &m)) != napi_ok)
+	{
+		napi_throw_error(env, "EINVAL", "parm 2: int32 expected");
+		return NULL;
+	}
+
+	napi_value rcValue;
+    napi_value napi_arraybuffer;
+    int32_t *buff_data = NULL;
+    // Create an array buffer
+    status = napi_create_arraybuffer(env, (s * sizeof(int32_t)), (void **)&buff_data, &napi_arraybuffer);
+    assert(status == napi_ok);
+
+    // Create a TypedArray by consuming the original Array Buffer.
+    size_t byte_offset = 0; // Let it be from the starting of the original array with full length
+    status = napi_create_typedarray( env, napi_int32_array, (size_t)s, napi_arraybuffer, byte_offset, &rcValue);
+    assert(status == napi_ok);
+    for( int i=0; i<s; ++i )
+    {
+        *(buff_data + i)  = i * m;
+    }
+
+	return (rcValue);
 }
