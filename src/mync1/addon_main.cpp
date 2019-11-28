@@ -107,6 +107,10 @@ napi_value Init(napi_env env, napi_value exports)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "GetMultiplicationTableInt32", fn)) != napi_ok)
 		return NULL;
+	if ((status = napi_create_function(env, "GetMultiplicationTable_ExternalMem", NAPI_AUTO_LENGTH, CArrayBufferExternalMem_GetMultiplicationTable, NULL, &fn)) != napi_ok)
+		return NULL;
+	if ((status = napi_set_named_property(env, exports, "GetMultiplicationTable_ExternalMem", fn)) != napi_ok)
+		return NULL;
 
 
 	MyObject::Init(env, exports);

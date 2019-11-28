@@ -27,6 +27,7 @@ napi_value CMyCallback2(napi_env env, const napi_callback_info info);
 napi_value CArrayBuffSum(napi_env env, napi_callback_info info);
 napi_value CArrayBuffer_GetMultiplicationTable(napi_env env, napi_callback_info info);
 napi_value CInt32TypedArray_GetMultiplicationTable(napi_env env, napi_callback_info info);
+napi_value CArrayBufferExternalMem_GetMultiplicationTable(napi_env env, napi_callback_info info);
 
 
 ///////////////////////

@@ -2,6 +2,15 @@
 #include "addon_api.h"
 #include "cpp_util.h"
 #include "stdio.h"
+#include "stdlib.h"
+
+void FreeExternalArrayBufferMemory(napi_env env, void* data, void* hint)
+{
+    // externally-owned data is ready to be cleaned up
+    // the object with which it was associated with, has been garbage-collected
+    printf("C-Free : AB External Memory Address: %p\n", data);
+    free(data);
+}
 
 
 // Receive an ArrayBuffer from JavaScript
@@ -172,3 +181,61 @@ napi_value CInt32TypedArray_GetMultiplicationTable(napi_env env, napi_callback_i
 
 	return (rcValue);
 }
+
+
+/////////////////////////////////////////////////////////////////////////
+// Create ArrayBuffer at native layer with externally allocated memory and return it to JavaScript
+// This function expects two parameters 's' and 'm' and return an array buffer.
+// s is the size of the int32 array
+// m multiplication factor against the index value.
+napi_value CArrayBufferExternalMem_GetMultiplicationTable(napi_env env, napi_callback_info info)
+{
+	napi_status status;
+	napi_value argv[2];
+
+	// [in-out] argc: Specifies the size of the provided argv array and
+	// receives the actual count of arguments
+	size_t argc = 2;
+	int32_t s = 0;
+	int32_t m = 0;
+
+	napi_get_cb_info(env, info, &argc, argv, NULL, NULL);
+	if (argc != 2)
+	{
+		napi_throw_error(env, "EINVAL", "arguments missmatch");
+		return NULL;
+	}
+
+    // First parm is size of the array
+	if ((status = napi_get_value_int32(env, argv[0], &s)) != napi_ok)
+	{
+		napi_throw_error(env, "EINVAL", "parm 1: int32 expected");
+		return NULL;
+	}
+
+    // Second parameter multiplication factor.
+	if ((status = napi_get_value_int32(env, argv[1], &m)) != napi_ok)
+	{
+		napi_throw_error(env, "EINVAL", "parm 2: int32 expected");
+		return NULL;
+	}
+
+    size_t byte_length = sizeof(int32_t)*s;
+    int32_t *external_data = (int32_t *) malloc( byte_length );
+    printf("C-Alloc: AB External Memory Address: %p\n", (void*)external_data);
+
+	napi_value rcValue;
+    // Create array buffer with externally allocated memory.
+    // When the item is GCed, it will call FreeExternalArrayBufferMemory
+    status = napi_create_external_arraybuffer( env, (void *)external_data, byte_length,
+                FreeExternalArrayBufferMemory, NULL, &rcValue);
+
+    assert(status == napi_ok);
+    for( int i=0; i<s; ++i )
+    {
+        *(external_data + i)  = i * m;
+    }
+
+	return (rcValue);
+}
+
