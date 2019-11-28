@@ -11,7 +11,7 @@ cmake_minimum_required(VERSION 3.10)
 
 # When compiling in Debug mode, it defines DEBUG (available Cmake >= 3.0)
 add_compile_options("$<$<CONFIG:DEBUG>:-DDEBUG>")
-
+# add_compile_definitions(NAPI_EXPERIMENTAL)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -48,6 +48,7 @@ file(GLOB SOURCE_FILES
         "${mync1_source_dir}/MyPromise1.cpp"
         "${mync1_source_dir}/SpeedTest.cpp"
         "${mync1_source_dir}/ArrayBuff.cpp"
+        "${mync1_source_dir}/ThreadSafeAsyncStream.cpp"
 )
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES} ${CMAKE_JS_SRC})
@@ -65,4 +66,4 @@ target_compile_definitions(${PROJECT_NAME} PRIVATE _CRT_SECURE_NO_WARNINGS=1)
 target_link_libraries(${PROJECT_NAME} ${CMAKE_JS_LIB})
 
 # Define NAPI_VERSION
-add_definitions(-DNAPI_VERSION=3)
+add_definitions(-DNAPI_VERSION=4)

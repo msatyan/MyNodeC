@@ -21,6 +21,8 @@ If you are new to node.js native (C/C++) Addons and starting the groundwork for 
 - [BINDINGS](https://www.npmjs.com/package/bindings)
 : It’s a Node.js package which allows us to export our native extension.
 - BINDING.GYP : node-gyp uses this file to describes the configuration needed for compile and build native extension.
+- [node-addon-examples](https://github.com/nodejs/node-addon-examples)
+: A good collection of N-API and node-addon-api examples.
 
 
 ### Why [N-API](https://nodejs.org/api/n-api.html) ?
@@ -29,6 +31,8 @@ Node.js is a JavaScript library, yet its core is writ in C/C++ ([V8](https://git
 The [N-API](https://nodejs.org/api/n-api.html) is expected to address this problem to a new level, it is expected to be Application Binary Interface (ABI) stable across versions of Node.js release. This will be a big relief for those who maintain native node.js Addon modules. Though the N-API was available with two past LTS node releases, it was experimental at that time. The current node.js LTS release (v10) has marked it as stable. I feel then it is right time to jump in and start using it. So far I am impressed with the concept and design because of its simplicity and easy to use than NAN.
 
 The **N-API** is C language API and it is part of node.js core itself, then no external module dependency. To provide support for C++, the node.js team is also maintains a C++ wrapper module (created on top of N-API) called [node-addon-api](https://github.com/nodejs/node-addon-api). This wrapper is not part of node.js core, still it is maintained by the node.js team.
+
+The node team has done a good job by creating a set of N-API and node-addon-api examples in a single repository, and it can be accessed from [node-addon-examples](https://github.com/nodejs/node-addon-examples). It has helped me a lot when I started learning N-API; in fact most of the examples in this repository are either a direct copy of it or enhancing by deriving the concept from it.
 
 
 ### Native addon functionalities coved in this example
@@ -42,7 +46,9 @@ This example try to mix and match both **N-API** and **node-addon-api** in the s
 - Callback
 - Promise
 - Event Emitter
+- Native function receive JavaScript object then print its keys and values.
 - Array Buff
+- ThreadSafeAsyncStream
 
 
 ### Prerequisite

@@ -26,9 +26,20 @@
 // This method is equivalent to calling napi_set_property with a
 // napi_value created from the string passed in as utf8Name.
 
-
+#include <assert.h>
 #include "addon_api.h"
 #include "addon_api_4cpp.h"
+#include "stdlib.h"
+
+// Free the per-addon-instance data.
+void addon_getting_unloaded(napi_env env, void *data, void *hint)
+{
+  AddonData *addon_data = (AddonData *)data;
+  assert(addon_data->work == NULL &&
+         "No work item in progress at module unload");
+  free(addon_data);
+}
+
 
 napi_value Init(napi_env env, napi_value exports)
 {
@@ -92,7 +103,9 @@ napi_value Init(napi_env env, napi_value exports)
 	MyObject::Init(env, exports);
 
 	// Init for my node-addon-api session
-	MyNodeAddonApiInitSession1( env, exports );
+	Init_MyNodeAddonApiSession1( env, exports );
+
+	Init_ThreadSafeAsyncStream( env, exports );
 
 	return exports;
 }
