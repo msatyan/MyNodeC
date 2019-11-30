@@ -35,8 +35,8 @@
 void addon_getting_unloaded(napi_env env, void *data, void *hint)
 {
   AddonData *addon_data = (AddonData *)data;
-  assert(addon_data->work == NULL &&
-         "No work item in progress at module unload");
+  assert(addon_data->work_StreamSearch == NULL &&
+         "No StreamSearch work item in progress at module unload");
   free(addon_data);
 }
 

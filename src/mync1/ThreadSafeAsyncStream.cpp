@@ -14,28 +14,28 @@
 #define CAR "Car"
 #define BICYCLE "Bicycle"
 
-
-typedef enum  {
-    bird=0,
-    cat,
-    dog,
-    car,
-    bicycle
+typedef enum
+{
+  bird = 0,
+  cat,
+  dog,
+  car,
+  bicycle
 } SearchObjects;
 
-typedef struct {
+typedef struct
+{
   int frame;
   SearchObjects obj;
 } ObjectFindInfo;
 
-
 void VideoSearchFindNext(ObjectFindInfo *obj)
 {
-	static int frame = 0;
+  static int frame = 0;
 
-	obj->obj = static_cast<SearchObjects>( rand() % NUM_OBJECTS_TO_REPORT );
-	frame += rand() % 1000;
-	obj->frame = frame;
+  obj->obj = static_cast<SearchObjects>(rand() % NUM_OBJECTS_TO_REPORT);
+  frame += rand() % 1000;
+  obj->frame = frame;
   // Provide some delay to simulate work
   std::this_thread::sleep_for(std::chrono::milliseconds(150));
 }
@@ -43,42 +43,41 @@ void VideoSearchFindNext(ObjectFindInfo *obj)
 const char *GetObjName(SearchObjects obj)
 {
   const char *cp = "unknown";
-  switch(obj)
+  switch (obj)
   {
-    case bird:
+  case bird:
     cp = BIRD;
     break;
 
-    case cat:
+  case cat:
     cp = CAT;
     break;
 
-    case dog:
+  case dog:
     cp = DOG;
     break;
 
-    case car:
+  case car:
     cp = CAR;
     break;
 
-    case bicycle:
+  case bicycle:
     cp = BICYCLE;
     break;
   }
-  return(cp);
+  return (cp);
 }
-
 
 // This function is responsible for converting data coming in from the worker
 // thread to napi_value items that can be passed into JavaScript, and for
 // calling the JavaScript function.
-static void ThreadSafe_CallJS(napi_env env, napi_value js_cb, void *context, void *data)
+static void CThreadSafeFun4CallingJS(napi_env env, napi_value js_cb, void *context, void *data)
 {
   // This parameter is not used.
   (void)context;
 
   // Retrieve the prime from the item created by the worker thread.
-  ObjectFindInfo* pObjList = (ObjectFindInfo*)data;
+  ObjectFindInfo *pObjList = (ObjectFindInfo *)data;
 
   // env and js_cb may both be NULL if Node.js is in its cleanup phase, and
   // items are left over from earlier thread-safe calls from the worker thread.
@@ -89,24 +88,24 @@ static void ThreadSafe_CallJS(napi_env env, napi_value js_cb, void *context, voi
     napi_value undefined;
     napi_value js_result_array;
 
-    assert( napi_create_array_with_length( env,
-            NUM_OBJECTS_TO_REPORT, &js_result_array)  == napi_ok);
+    assert(napi_create_array_with_length(env,
+        NUM_OBJECTS_TO_REPORT, &js_result_array) == napi_ok);
 
-    for( int i=0; i<NUM_OBJECTS_TO_REPORT; ++i)
+    for (int i = 0; i < NUM_OBJECTS_TO_REPORT; ++i)
     {
       napi_value js_obj;
       napi_value val_obj;
       napi_value val_frame;
-      const char *obj_name = GetObjName((pObjList+i)->obj);
+      const char *obj_name = GetObjName((pObjList + i)->obj);
       napi_create_object(env, &js_obj);
-      assert( napi_create_string_utf8(env, obj_name, NAPI_AUTO_LENGTH, &val_obj) == napi_ok);
-      assert( napi_create_int32(env, (pObjList+i)->frame, &val_frame) == napi_ok);
+      assert(napi_create_string_utf8(env, obj_name, NAPI_AUTO_LENGTH, &val_obj) == napi_ok);
+      assert(napi_create_int32(env, (pObjList + i)->frame, &val_frame) == napi_ok);
 
-      assert( napi_set_named_property(env, js_obj, "obj", val_obj) == napi_ok);
-      assert( napi_set_named_property(env, js_obj, "f", val_frame) == napi_ok);
+      assert(napi_set_named_property(env, js_obj, "obj", val_obj) == napi_ok);
+      assert(napi_set_named_property(env, js_obj, "f", val_frame) == napi_ok);
 
       // Add the object to the array
-      assert( napi_set_element( env, js_result_array, i, js_obj) == napi_ok);
+      assert(napi_set_element(env, js_result_array, i, js_obj) == napi_ok);
     }
 
     // Retrieve the JavaScript `undefined` value so we can use it as the `this`
@@ -137,26 +136,26 @@ static void ExecuteWork(napi_env env, void *data)
   // We bracket the use of the thread-safe function by this thread by a call to
   // napi_acquire_threadsafe_function() here, and by a call to
   // napi_release_threadsafe_function() immediately prior to thread exit.
-  assert(napi_acquire_threadsafe_function(addon_data->tsfn) == napi_ok);
+  assert(napi_acquire_threadsafe_function(addon_data->tsfn_StreamSearch) == napi_ok);
 
   int MaxNumReport = 6;
-  for( int rCout=0; rCout<MaxNumReport; ++rCout)
+  for (int rCout = 0; rCout < MaxNumReport; ++rCout)
   {
     int num_obj = NUM_OBJECTS_TO_REPORT;
 
     // This memory will be free after processing of the C callback
-    ObjectFindInfo* pObjList = (ObjectFindInfo*)malloc(num_obj * sizeof(ObjectFindInfo));
+    ObjectFindInfo *pObjList = (ObjectFindInfo *)malloc(num_obj * sizeof(ObjectFindInfo));
 
     for (int i = 0; i < num_obj; ++i)
     {
-      VideoSearchFindNext( pObjList+i );
+      VideoSearchFindNext(pObjList + i);
     }
-    assert( napi_call_threadsafe_function(addon_data->tsfn, pObjList,
-            napi_tsfn_blocking) == napi_ok);
+    assert(napi_call_threadsafe_function(addon_data->tsfn_StreamSearch, pObjList,
+                                         napi_tsfn_blocking) == napi_ok);
   }
 
   // Indicate that this thread will make no further use of the thread-safe function.
-  assert(napi_release_threadsafe_function(addon_data->tsfn,
+  assert(napi_release_threadsafe_function(addon_data->tsfn_StreamSearch,
                                           napi_tsfn_release) == napi_ok);
 }
 
@@ -166,14 +165,13 @@ static void WorkComplete(napi_env env, napi_status status, void *data)
   AddonData *addon_data = (AddonData *)data;
 
   // Clean up the thread-safe function and the work item associated with this
-  // run.
-  assert(napi_release_threadsafe_function(addon_data->tsfn,
+  assert(napi_release_threadsafe_function(addon_data->tsfn_StreamSearch,
                                           napi_tsfn_release) == napi_ok);
-  assert(napi_delete_async_work(env, addon_data->work) == napi_ok);
+  assert(napi_delete_async_work(env, addon_data->work_StreamSearch) == napi_ok);
 
   // Set both values to NULL so JavaScript can order a new run of the thread.
-  addon_data->work = NULL;
-  addon_data->tsfn = NULL;
+  addon_data->work_StreamSearch = NULL;
+  addon_data->tsfn_StreamSearch = NULL;
 }
 
 // Create a thread-safe function and an async queue work item. We pass the
@@ -186,7 +184,7 @@ napi_value CAsyncStreamSearch(napi_env env, napi_callback_info info)
   napi_value args[MaxArgExpected];
   size_t argc = sizeof(args) / sizeof(napi_value);
 
-  int32_t MaxSearchTime=0;
+  int32_t MaxSearchTime = 0;
   napi_value js_cb;
 
   napi_value work_name;
@@ -202,19 +200,20 @@ napi_value CAsyncStreamSearch(napi_env env, napi_callback_info info)
                           (void **)(&addon_data)) == napi_ok);
   if (argc != 2)
   {
-      napi_throw_error(env, "EINVAL", "Argument count mismatch");
+    napi_throw_error(env, "EINVAL", "AsyncStreamSearch: Argument count mismatch");
   }
 
+  // Process the parameters
   // First argument is time it need to search, in sec
-	assert( napi_get_value_int32( env, args[0], &MaxSearchTime) == napi_ok );
+  assert(napi_get_value_int32(env, args[0], &MaxSearchTime) == napi_ok);
   js_cb = args[1]; // Second param, the JS callback function
 
   // Ensure that no work is currently in progress.
-  assert(addon_data->work == NULL && "Only one work item must exist at a time");
+  assert(addon_data->work_StreamSearch == NULL && "Only one StreamSearch work item must exist at a time");
 
   // Create a string to describe this asynchronous operation.
   assert(napi_create_string_utf8(env,
-                                 "N-API Thread-safe Call from Async Work Item",
+                                 "N-API Thread-safe Call from AsyncStreamSearch Work Item",
                                  NAPI_AUTO_LENGTH,
                                  &work_name) == napi_ok);
 
@@ -229,8 +228,9 @@ napi_value CAsyncStreamSearch(napi_env env, napi_callback_info info)
                                          NULL,
                                          NULL,
                                          NULL,
-                                         ThreadSafe_CallJS,
-                                         &(addon_data->tsfn)) == napi_ok);
+                                         CThreadSafeFun4CallingJS,
+                                         // The asynchronous thread-safe JavaScript function
+                                         &(addon_data->tsfn_StreamSearch)) == napi_ok);
 
   // Create an async work item, passing in the addon data, which will give the
   // worker thread access to the above-created thread-safe function.
@@ -240,21 +240,20 @@ napi_value CAsyncStreamSearch(napi_env env, napi_callback_info info)
                                 ExecuteWork,
                                 WorkComplete,
                                 addon_data,
-                                &(addon_data->work)) == napi_ok);
+                                &(addon_data->work_StreamSearch)) == napi_ok);
 
   // Queue the work item for execution.
-  assert(napi_queue_async_work(env, addon_data->work) == napi_ok);
+  assert(napi_queue_async_work(env, addon_data->work_StreamSearch) == napi_ok);
 
   // This causes `undefined` to be returned to JavaScript.
   return NULL;
 }
 
-
 napi_value Init_AsyncStreamSearch(napi_env env, napi_value exports)
 {
   // Define addon-level data associated with this instance of the addon.
   AddonData *addon_data = (AddonData *)malloc(sizeof(*addon_data));
-  addon_data->work = NULL;
+  addon_data->work_StreamSearch = NULL;
 
   // Define the properties that will be set on exports.
   napi_property_descriptor start_work = {

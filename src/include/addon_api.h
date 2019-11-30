@@ -8,8 +8,8 @@
 
 typedef struct
 {
-  napi_async_work work;
-  napi_threadsafe_function tsfn;
+  napi_async_work work_StreamSearch;
+  napi_threadsafe_function tsfn_StreamSearch;
 } AddonData;
 
 void addon_getting_unloaded(napi_env env, void *data, void *hint);
