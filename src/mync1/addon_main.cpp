@@ -113,7 +113,7 @@ napi_value Init(napi_env env, napi_value exports)
 		return NULL;
 
 
-	MyObject::Init(env, exports);
+	MyNativeObj::Init(env, exports);
 
 	// Init for my node-addon-api session
 	Init_MyNodeAddonApiSession1( env, exports );

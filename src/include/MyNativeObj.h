@@ -3,15 +3,15 @@
 
 #include <node_api.h>
 
-class MyObject
+class MyNativeObj
 {
 public:
   static napi_value Init(napi_env env, napi_value exports);
   static void Destructor(napi_env env, void *nativeObject, void *finalize_hint);
 
 private:
-  explicit MyObject(double value_ = 0);
-  ~MyObject();
+  explicit MyNativeObj(double value_ = 0);
+  ~MyNativeObj();
 
   static napi_value New(napi_env env, napi_callback_info info);
   static napi_value GetValue(napi_env env, napi_callback_info info);

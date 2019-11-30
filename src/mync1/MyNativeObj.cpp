@@ -2,31 +2,32 @@
 #include "MyNativeObj.h"
 #include <assert.h>
 
+
 #define DECLARE_NAPI_METHOD(name, func)         \
     {                                           \
         name, 0, func, 0, 0, 0, napi_default, 0 \
     }
 
-napi_ref MyObject::constructor;
+napi_ref MyNativeObj::constructor;
 
-MyObject::MyObject(double value) : value_(value), env_(nullptr), wrapper_(nullptr)
+MyNativeObj::MyNativeObj(double value) : value_(value), env_(nullptr), wrapper_(nullptr)
 {
 
 }
 
-MyObject::~MyObject()
+MyNativeObj::~MyNativeObj()
 {
     napi_delete_reference(env_, wrapper_);
 }
 
 
-void MyObject::Destructor(napi_env env, void *nativeObject, void * /*finalize_hint*/)
+void MyNativeObj::Destructor(napi_env env, void *nativeObject, void * /*finalize_hint*/)
 {
-    reinterpret_cast<MyObject *>(nativeObject)->~MyObject();
+    reinterpret_cast<MyNativeObj *>(nativeObject)->~MyNativeObj();
 }
 
 /////////////////////////
-napi_value MyObject::Init(napi_env env, napi_value exports)
+napi_value MyNativeObj::Init(napi_env env, napi_value exports)
 {
     napi_status status;
     napi_value cons;
@@ -38,7 +39,7 @@ napi_value MyObject::Init(napi_env env, napi_value exports)
     };
 
     size_t property_count = sizeof(properties)/sizeof(napi_property_descriptor);
-    status =  napi_define_class(env, "MyObject", NAPI_AUTO_LENGTH, New,
+    status =  napi_define_class(env, "MyNativeObj", NAPI_AUTO_LENGTH, New,
                                 nullptr, property_count, properties, &cons);
     assert(status == napi_ok);
 
@@ -47,13 +48,13 @@ napi_value MyObject::Init(napi_env env, napi_value exports)
     status = napi_create_reference(env, cons, 1, &constructor);
     assert(status == napi_ok);
 
-    status = napi_set_named_property(env, exports, "MyObject", cons);
+    status = napi_set_named_property(env, exports, "MyNativeObj", cons);
     assert(status == napi_ok);
     return exports;
 }
 ////////////////////////////
 
-napi_value MyObject::New(napi_env env, napi_callback_info info)
+napi_value MyNativeObj::New(napi_env env, napi_callback_info info)
 {
     napi_status status;
 
@@ -64,7 +65,7 @@ napi_value MyObject::New(napi_env env, napi_callback_info info)
 
     if (is_constructor)
     {
-        // Invoked as constructor: `new MyObject(...)`
+        // Invoked as constructor: `new MyNativeObj(...)`
         size_t argc = 1;
         napi_value args[1];
         napi_value jsthis;
@@ -83,13 +84,13 @@ napi_value MyObject::New(napi_env env, napi_callback_info info)
             assert(status == napi_ok);
         }
 
-        MyObject *obj = new MyObject(value);
+        MyNativeObj *obj = new MyNativeObj(value);
 
         obj->env_ = env;
         status = napi_wrap(env,
                            jsthis,
                            reinterpret_cast<void *>(obj),
-                           MyObject::Destructor,
+                           MyNativeObj::Destructor,
                            nullptr, // finalize_hint
                            &obj->wrapper_);
         assert(status == napi_ok);
@@ -98,7 +99,7 @@ napi_value MyObject::New(napi_env env, napi_callback_info info)
     }
     else
     {
-        // Invoked as plain function `MyObject(...)`, turn into construct call.
+        // Invoked as plain function `MyNativeObj(...)`, turn into construct call.
         size_t argc_ = 1;
         napi_value args[1];
         status = napi_get_cb_info(env, info, &argc_, args, nullptr, nullptr);
@@ -120,7 +121,7 @@ napi_value MyObject::New(napi_env env, napi_callback_info info)
     }
 }
 
-napi_value MyObject::GetValue(napi_env env, napi_callback_info info)
+napi_value MyNativeObj::GetValue(napi_env env, napi_callback_info info)
 {
     napi_status status;
 
@@ -128,7 +129,7 @@ napi_value MyObject::GetValue(napi_env env, napi_callback_info info)
     status = napi_get_cb_info(env, info, nullptr, nullptr, &jsthis, nullptr);
     assert(status == napi_ok);
 
-    MyObject *obj;
+    MyNativeObj *obj;
     status = napi_unwrap(env, jsthis, reinterpret_cast<void **>(&obj));
     assert(status == napi_ok);
 
@@ -139,7 +140,7 @@ napi_value MyObject::GetValue(napi_env env, napi_callback_info info)
     return num;
 }
 
-napi_value MyObject::SetValue(napi_env env, napi_callback_info info)
+napi_value MyNativeObj::SetValue(napi_env env, napi_callback_info info)
 {
     napi_status status;
 
@@ -149,7 +150,7 @@ napi_value MyObject::SetValue(napi_env env, napi_callback_info info)
     status = napi_get_cb_info(env, info, &argc, &value, &jsthis, nullptr);
     assert(status == napi_ok);
 
-    MyObject *obj;
+    MyNativeObj *obj;
     status = napi_unwrap(env, jsthis, reinterpret_cast<void **>(&obj));
     assert(status == napi_ok);
 
@@ -159,7 +160,7 @@ napi_value MyObject::SetValue(napi_env env, napi_callback_info info)
     return nullptr;
 }
 
-napi_value MyObject::PlusOne(napi_env env, napi_callback_info info)
+napi_value MyNativeObj::PlusOne(napi_env env, napi_callback_info info)
 {
     napi_status status;
 
@@ -167,7 +168,7 @@ napi_value MyObject::PlusOne(napi_env env, napi_callback_info info)
     status = napi_get_cb_info(env, info, nullptr, nullptr, &jsthis, nullptr);
     assert(status == napi_ok);
 
-    MyObject *obj;
+    MyNativeObj *obj;
     status = napi_unwrap(env, jsthis, reinterpret_cast<void **>(&obj));
     assert(status == napi_ok);
 
@@ -180,7 +181,7 @@ napi_value MyObject::PlusOne(napi_env env, napi_callback_info info)
     return num;
 }
 
-napi_value MyObject::Multiply(napi_env env, napi_callback_info info)
+napi_value MyNativeObj::Multiply(napi_env env, napi_callback_info info)
 {
     napi_status status;
 
@@ -201,7 +202,7 @@ napi_value MyObject::Multiply(napi_env env, napi_callback_info info)
         assert(status == napi_ok);
     }
 
-    MyObject *obj;
+    MyNativeObj *obj;
     status = napi_unwrap(env, jsthis, reinterpret_cast<void **>(&obj));
     assert(status == napi_ok);
 

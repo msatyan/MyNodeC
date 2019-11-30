@@ -33,7 +33,7 @@ void VideoSearchFindNext(ObjectFindInfo *obj)
 {
 	static int frame = 0;
 
-	obj->obj = static_cast<SearchObjects>(rand() % 5);
+	obj->obj = static_cast<SearchObjects>( rand() % NUM_OBJECTS_TO_REPORT );
 	frame += rand() % 1000;
 	obj->frame = frame;
   // Provide some delay to simulate work
@@ -103,7 +103,7 @@ static void CallJs(napi_env env, napi_value js_cb, void *context, void *data)
       assert( napi_create_int32(env, (pObjList+i)->frame, &val_frame) == napi_ok);
 
       assert( napi_set_named_property(env, js_obj, "obj", val_obj) == napi_ok);
-      assert( napi_set_named_property(env, js_obj, "frame", val_frame) == napi_ok);
+      assert( napi_set_named_property(env, js_obj, "f", val_frame) == napi_ok);
 
       // Add the object to the array
       assert( napi_set_element( env, js_result_array, i, js_obj) == napi_ok);

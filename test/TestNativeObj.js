@@ -1,7 +1,7 @@
 const myaddon = require('bindings')('mync1');
 
 function TestMyNativeObject() {
-    var obj = new myaddon.MyObject(10);
+    var obj = new myaddon.MyNativeObj(10);
     console.log(obj.plusOne()); // 11
     console.log(obj.plusOne()); // 12
     console.log(obj.plusOne()); // 13
