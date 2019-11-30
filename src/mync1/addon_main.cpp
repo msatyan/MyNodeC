@@ -118,7 +118,7 @@ napi_value Init(napi_env env, napi_value exports)
 	// Init for my node-addon-api session
 	Init_MyNodeAddonApiSession1( env, exports );
 
-	Init_ThreadSafeAsyncStream( env, exports );
+	Init_AsyncStreamSearch( env, exports );
 
 	return exports;
 }

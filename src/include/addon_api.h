@@ -31,7 +31,7 @@ napi_value CArrayBufferExternalMem_GetMultiplicationTable(napi_env env, napi_cal
 
 
 ///////////////////////
-napi_value Init_ThreadSafeAsyncStream(napi_env env, napi_value exports);
+napi_value Init_AsyncStreamSearch(napi_env env, napi_value exports);
 
 #endif  // _ADDON_API_
 
