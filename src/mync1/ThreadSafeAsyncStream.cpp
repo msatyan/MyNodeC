@@ -4,10 +4,69 @@
 #include "addon_api.h"
 #include <stdlib.h>
 #include <stdio.h>
+#include <thread>
 
-// Limit ourselves to this many primes, starting at 2
-#define PRIME_COUNT 10000
-#define REPORT_EVERY 1000
+#define NUM_OBJECTS_TO_REPORT 4
+
+#define BIRD "Bird"
+#define CAT "Cat"
+#define DOG "Dog"
+#define CAR "Car"
+#define BICYCLE "Bicycle"
+
+
+typedef enum  {
+    bird=0,
+    cat,
+    dog,
+    car,
+    bicycle
+} SearchObjects;
+
+typedef struct {
+  int frame;
+  SearchObjects obj;
+} ObjectFindInfo;
+
+
+void VideoSearchFindNext(ObjectFindInfo *obj)
+{
+	static int frame = 0;
+
+	obj->obj = static_cast<SearchObjects>(rand() % 5);
+	frame += rand() % 1000;
+	obj->frame = frame;
+  // Provide some delay to simulate work
+  std::this_thread::sleep_for(std::chrono::milliseconds(150));
+}
+
+const char *GetObjName(SearchObjects obj)
+{
+  const char *cp = "unknown";
+  switch(obj)
+  {
+    case bird:
+    cp = BIRD;
+    break;
+
+    case cat:
+    cp = CAT;
+    break;
+
+    case dog:
+    cp = DOG;
+    break;
+
+    case car:
+    cp = CAR;
+    break;
+
+    case bicycle:
+    cp = BICYCLE;
+    break;
+  }
+  return(cp);
+}
 
 
 // This function is responsible for converting data coming in from the worker
@@ -19,7 +78,7 @@ static void CallJs(napi_env env, napi_value js_cb, void *context, void *data)
   (void)context;
 
   // Retrieve the prime from the item created by the worker thread.
-  int the_prime = *(int *)data;
+  ObjectFindInfo* pObjList = (ObjectFindInfo*)data;
 
   // env and js_cb may both be NULL if Node.js is in its cleanup phase, and
   // items are left over from earlier thread-safe calls from the worker thread.
@@ -27,10 +86,28 @@ static void CallJs(napi_env env, napi_value js_cb, void *context, void *data)
   // items.
   if (env != NULL)
   {
-    napi_value undefined, js_the_prime;
+    napi_value undefined;
+    napi_value js_result_array;
 
-    // Convert the integer to a napi_value.
-    assert(napi_create_int32(env, the_prime, &js_the_prime) == napi_ok);
+    assert( napi_create_array_with_length( env,
+            NUM_OBJECTS_TO_REPORT, &js_result_array)  == napi_ok);
+
+    for( int i=0; i<NUM_OBJECTS_TO_REPORT; ++i)
+    {
+      napi_value js_obj;
+      napi_value val_obj;
+      napi_value val_frame;
+      const char *obj_name = GetObjName((pObjList+i)->obj);
+      napi_create_object(env, &js_obj);
+      assert( napi_create_string_utf8(env, obj_name, NAPI_AUTO_LENGTH, &val_obj) == napi_ok);
+      assert( napi_create_int32(env, (pObjList+i)->frame, &val_frame) == napi_ok);
+
+      assert( napi_set_named_property(env, js_obj, "obj", val_obj) == napi_ok);
+      assert( napi_set_named_property(env, js_obj, "frame", val_frame) == napi_ok);
+
+      // Add the object to the array
+      assert( napi_set_element( env, js_result_array, i, js_obj) == napi_ok);
+    }
 
     // Retrieve the JavaScript `undefined` value so we can use it as the `this`
     // value of the JavaScript function call.
@@ -42,7 +119,7 @@ static void CallJs(napi_env env, napi_value js_cb, void *context, void *data)
                               undefined,
                               js_cb,
                               1,
-                              &js_the_prime,
+                              &js_result_array,
                               NULL) == napi_ok);
   }
 
@@ -55,45 +132,27 @@ static void CallJs(napi_env env, napi_value js_cb, void *context, void *data)
 static void ExecuteWork(napi_env env, void *data)
 {
   AddonData *addon_data = (AddonData *)data;
-  int idx_inner, idx_outer;
-  int prime_count = 0;
+  // int idx_inner, idx_outer;
 
   // We bracket the use of the thread-safe function by this thread by a call to
   // napi_acquire_threadsafe_function() here, and by a call to
   // napi_release_threadsafe_function() immediately prior to thread exit.
   assert(napi_acquire_threadsafe_function(addon_data->tsfn) == napi_ok);
 
-  // Find the first 1000 prime numbers using an extremely inefficient algorithm.
-  for (idx_outer = 2; prime_count < PRIME_COUNT; idx_outer++)
+  int MaxNumReport = 6;
+  for( int rCout=0; rCout<MaxNumReport; ++rCout)
   {
-    for (idx_inner = 2; idx_inner < idx_outer; idx_inner++)
-    {
-      if (idx_outer % idx_inner == 0)
-      {
-        break;
-      }
-    }
-    if (idx_inner < idx_outer)
-    {
-      continue;
-    }
+    int num_obj = NUM_OBJECTS_TO_REPORT;
 
-    // We found a prime. If it's the tenth since the last time we sent one to
-    // JavaScript, send it to JavaScript.
-    if (!(++prime_count % REPORT_EVERY))
+    // This memory will be free after processing of the C callback
+    ObjectFindInfo* pObjList = (ObjectFindInfo*)malloc(num_obj * sizeof(ObjectFindInfo));
+
+    for (int i = 0; i < num_obj; ++i)
     {
-
-      // Save the prime number to the heap. The JavaScript marshaller (CallJs)
-      // will free this item after having sent it to JavaScript.
-      int *the_prime = (int *)malloc(sizeof(*the_prime));
-      *the_prime = idx_outer;
-
-      // Initiate the call into JavaScript. The call into JavaScript will not
-      // have happened when this function returns, but it will be queued.
-      assert(napi_call_threadsafe_function(addon_data->tsfn,
-                                           the_prime,
-                                           napi_tsfn_blocking) == napi_ok);
+      VideoSearchFindNext( pObjList+i );
     }
+    assert( napi_call_threadsafe_function(addon_data->tsfn, pObjList,
+            napi_tsfn_blocking) == napi_ok);
   }
 
   // Indicate that this thread will make no further use of the thread-safe function.

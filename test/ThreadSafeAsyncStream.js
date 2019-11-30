@@ -5,8 +5,11 @@ const myaddon = require('bindings')('mync1');
 // into which it will pass prime numbers. This callback simply prints them out.
 function TestThreadSafeAsyncStream() {
 
-  myaddon.ThreadSafeAsyncStream(  (thePrime) =>
-    console.log("Received prime from secondary thread: " + thePrime));
+  myaddon.ThreadSafeAsyncStream(  (obj) => {
+
+    console.log( JSON.stringify(obj) );
+
+  } );
 
 }
 

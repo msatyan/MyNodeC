@@ -32,7 +32,7 @@ The [N-API](https://nodejs.org/api/n-api.html) is expected to address this probl
 
 The **N-API** is C language API and it is part of node.js core itself, then no external module dependency. To provide support for C++, the node.js team is also maintains a C++ wrapper module (created on top of N-API) called [node-addon-api](https://github.com/nodejs/node-addon-api). This wrapper is not part of node.js core, still it is maintained by the node.js team.
 
-The node team has done a good job by creating a set of N-API and node-addon-api examples in a single repository, and it can be accessed from [node-addon-examples](https://github.com/nodejs/node-addon-examples). It has helped me a lot when I started learning N-API; in fact most of the examples in this repository are either a direct copy of it or enhancing by deriving the concept from it.
+The node team has done a good job by creating a set of N-API and node-addon-api examples in a single repository, and it can be accessed from [node-addon-examples](https://github.com/nodejs/node-addon-examples). It has helped me a lot when I started learning N-API; in fact some of the examples in this repository are either a direct copy or enhance by deriving the concept from it.
 
 
 ### Native addon functionalities coved in this example
