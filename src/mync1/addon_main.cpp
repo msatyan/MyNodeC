@@ -31,15 +31,6 @@
 #include "addon_api_4cpp.h"
 #include "stdlib.h"
 
-// Free the per-addon-instance data.
-void addon_getting_unloaded(napi_env env, void *data, void *hint)
-{
-  AddonData *addon_data = (AddonData *)data;
-  assert(addon_data->work_StreamSearch == NULL &&
-         "No StreamSearch work item in progress at module unload");
-  free(addon_data);
-}
-
 
 napi_value Init(napi_env env, napi_value exports)
 {

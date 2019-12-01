@@ -79,6 +79,10 @@ napi_value CMyCallback2(napi_env env, const napi_callback_info info)
   assert(status == napi_ok);
 
   napi_value return_val;
+
+  // See also
+  // napi_async_execute_callback
+  // napi_async_complete_callback
   // Invoke JS callback function
   status = napi_call_function( env, global, cbJsFunc, NumParams2Jsf, aParams2cbJsFunc, &return_val );
   assert(status == napi_ok);

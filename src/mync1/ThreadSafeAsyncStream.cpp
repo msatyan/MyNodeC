@@ -68,6 +68,13 @@ const char *GetObjName(SearchObjects obj)
   return (cp);
 }
 
+typedef struct
+{
+  napi_async_work work_StreamSearch;
+  napi_threadsafe_function tsfn_StreamSearch;
+} AddonData;
+
+
 // This function is responsible for converting data coming in from the worker
 // thread to napi_value items that can be passed into JavaScript, and for
 // calling the JavaScript function.
@@ -247,6 +254,15 @@ napi_value CAsyncStreamSearch(napi_env env, napi_callback_info info)
 
   // This causes `undefined` to be returned to JavaScript.
   return NULL;
+}
+
+// Free the per-addon-instance data.
+static void addon_getting_unloaded(napi_env env, void *data, void *hint)
+{
+  AddonData *addon_data = (AddonData *)data;
+  assert(addon_data->work_StreamSearch == NULL &&
+         "No StreamSearch work item in progress at module unload");
+  free(addon_data);
 }
 
 napi_value Init_AsyncStreamSearch(napi_env env, napi_value exports)

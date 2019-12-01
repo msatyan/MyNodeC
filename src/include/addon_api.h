@@ -6,14 +6,6 @@
 #include <stdio.h>
 #include "MyNativeObj.h"
 
-typedef struct
-{
-  napi_async_work work_StreamSearch;
-  napi_threadsafe_function tsfn_StreamSearch;
-} AddonData;
-
-void addon_getting_unloaded(napi_env env, void *data, void *hint);
-
 napi_value MyC_SayHello(napi_env env, napi_callback_info info);
 napi_value MyC_GetValueFromC (napi_env env, napi_callback_info info);
 napi_value MyC_Print (napi_env env, napi_callback_info info);
