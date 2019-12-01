@@ -1,14 +1,13 @@
 const myaddon = require('bindings')('mync1');
 
-// Call the function "ThreadSafe_AsyncStreamSearch" which the native bindings library exposes.
-// The function accepts a callback which it will call from the worker thread and
-// into which it will pass prime numbers. This callback simply prints them out.
+// The native addon function doing the Thrad Safe Async all is AsyncStreamSearch
+// which accepts time  in second and a callback which it will call from the
+// worker thread and this callback JS function simply prints them result out.
 function Test_ThreadSafe_AsyncStreamSearch( t ) {
 
+  // The actual addon function doing the thread safe call
   myaddon.AsyncStreamSearch( t, (obj) => {
-
     console.log( JSON.stringify(obj) );
-
   } );
 
 }

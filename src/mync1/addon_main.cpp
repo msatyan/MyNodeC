@@ -102,14 +102,16 @@ napi_value Init(napi_env env, napi_value exports)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "GetMultiplicationTable_ExternalMem", fn)) != napi_ok)
 		return NULL;
-
+	if ((status = napi_create_function(env, "AsyncStreamSearch", NAPI_AUTO_LENGTH, CAsyncStreamSearch, NULL, &fn)) != napi_ok)
+		return NULL;
+	if ((status = napi_set_named_property(env, exports, "AsyncStreamSearch", fn)) != napi_ok)
+		return NULL;
 
 	MyNativeObj::Init(env, exports);
 
 	// Init for my node-addon-api session
 	Init_MyNodeAddonApiSession1( env, exports );
 
-	Init_AsyncStreamSearch( env, exports );
 
 	return exports;
 }

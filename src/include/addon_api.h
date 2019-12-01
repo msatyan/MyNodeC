@@ -20,10 +20,7 @@ napi_value CArrayBuffSum(napi_env env, napi_callback_info info);
 napi_value CArrayBuffer_GetMultiplicationTable(napi_env env, napi_callback_info info);
 napi_value CInt32TypedArray_GetMultiplicationTable(napi_env env, napi_callback_info info);
 napi_value CArrayBufferExternalMem_GetMultiplicationTable(napi_env env, napi_callback_info info);
-
-
-///////////////////////
-napi_value Init_AsyncStreamSearch(napi_env env, napi_value exports);
+napi_value CAsyncStreamSearch(napi_env env, napi_callback_info info);
 
 #endif  // _ADDON_API_
 

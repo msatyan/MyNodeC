@@ -7,65 +7,13 @@
 #include <thread>
 
 #define NUM_OBJECTS_TO_REPORT 4
-#define BIRD "Bird"
-#define CAT "Cat"
-#define DOG "Dog"
-#define CAR "Car"
-#define BUS "Bus"
-#define BICYCLE "Bicycle"
-
-
-typedef enum
-{
-  bird = 0,
-  cat,
-  dog,
-  car,
-  bus,
-  bicycle
-} SearchObjects;
-
+typedef enum { bird=0, cat, dog, car, bus, bicycle } SearchObjects;
 
 typedef struct
 {
   int frame;
   SearchObjects obj;
-} ObjectFindInfo;
-
-
-
-const char *GetObjName(SearchObjects obj)
-{
-  const char *cp = "unknown";
-  switch (obj)
-  {
-  case bird:
-    cp = BIRD;
-    break;
-
-  case cat:
-    cp = CAT;
-    break;
-
-  case dog:
-    cp = DOG;
-    break;
-
-  case bus:
-    cp = BUS;
-    break;
-
-  case car:
-    cp = CAR;
-    break;
-
-  case bicycle:
-    cp = BICYCLE;
-    break;
-  }
-  return (cp);
-}
-
+} ObjInfoThreadSafeFunctionDataEx_t;
 
 typedef struct
 {
@@ -75,9 +23,21 @@ typedef struct
 } AsyncStreamDataEx_t;
 
 
+const char *GetObjName(SearchObjects obj)
+{
+  const char *cp = "unknown";
+  if( obj == bird ) cp = "Bird";
+  else if( obj == cat ) cp = "Cat";
+  else if( obj == dog ) cp = "Dog";
+  else if( obj == bus ) cp = "Bus";
+  else if( obj == car ) cp = "Car";
+  else if( obj == bicycle ) cp = "Bicycle";
+  return (cp);
+}
+
 
 // Simulate searching of object in a Video
-void SimulatedObjectSearchInVideo(ObjectFindInfo *obj, int n)
+void SimulatedObjectSearchInVideo(ObjInfoThreadSafeFunctionDataEx_t *obj, int n)
 {
   static int frame = 0;
 
@@ -96,17 +56,15 @@ void SimulatedObjectSearchInVideo(ObjectFindInfo *obj, int n)
 }
 
 
-
-// This function is responsible for converting data coming in from the worker
-// thread to napi_value items that can be passed into JavaScript, and for
-// calling the JavaScript function.
-static void CThreadSafeFun4CallingJS(napi_env env, napi_value js_cb, void *context, void *data)
+// This function is responsible for converting data coming in from the worker thread to
+// napi_value items that can be passed into JavaScript, and also call the JavaScript callback function.
+static void ThreadSafeCFunction4CallingJS(napi_env env, napi_value js_cb, void *context, void *data)
 {
   // This parameter is not used.
   (void)context;
 
-  // Retrieve the prime from the item created by the worker thread.
-  ObjectFindInfo *pObjList = (ObjectFindInfo *)data;
+  // data: the result what worker thread has created.
+  ObjInfoThreadSafeFunctionDataEx_t *pObjList = (ObjInfoThreadSafeFunctionDataEx_t *)data;
   int ObjectArraySize = NUM_OBJECTS_TO_REPORT;
 
   // env and js_cb may both be NULL if Node.js is in its cleanup phase, and
@@ -142,14 +100,8 @@ static void CThreadSafeFun4CallingJS(napi_env env, napi_value js_cb, void *conte
     // value of the JavaScript function call.
     assert(napi_get_undefined(env, &undefined) == napi_ok);
 
-    // Call the JavaScript function and pass it the prime that the secondary
-    // thread found.
-    assert(napi_call_function(env,
-                              undefined,
-                              js_cb,
-                              1,
-                              &js_result_array,
-                              NULL) == napi_ok);
+    // Call the JavaScript function and pass the N-API JavaScript value
+    assert(napi_call_function(env, undefined, js_cb, 1, &js_result_array, NULL) == napi_ok);
   }
 
   // Free the item created by the worker thread.
@@ -157,24 +109,25 @@ static void CThreadSafeFun4CallingJS(napi_env env, napi_value js_cb, void *conte
 }
 
 
-
-// This function runs on a worker thread. It has no access to the JavaScript
-// environment except through the thread-safe function.
+// This function runs on a worker thread. Then we cannot call JavaScript from
+// this thread, it can be called only from a native addon's main thread
+// except through the thread-safe function.
 static void ExecuteWork(napi_env env, void *data)
 {
   AsyncStreamDataEx_t *async_stream_data_ex = (AsyncStreamDataEx_t *)data;
-  // int idx_inner, idx_outer;
 
-  // We bracket the use of the thread-safe function by this thread by a call to
-  // napi_acquire_threadsafe_function() here, and by a call to
-  // napi_release_threadsafe_function() immediately prior to thread exit.
+  // called to indicate that a new thread will start making use of the thread-safe function
+  // parameter: the asynchronous thread-safe JavaScript function (we crated by napi_create_threadsafe_function)
   assert(napi_acquire_threadsafe_function(async_stream_data_ex->tsfn_StreamSearch) == napi_ok);
 
 	time_t end_time = time(NULL) + async_stream_data_ex->MaxSearchTime;
   while( end_time > time(NULL) ) // time in sec
   {
     // This memory will be free after processing of the C callback
-    ObjectFindInfo *pObjList = (ObjectFindInfo *)malloc(NUM_OBJECTS_TO_REPORT * sizeof(ObjectFindInfo));
+    ObjInfoThreadSafeFunctionDataEx_t *pObjList =
+    (ObjInfoThreadSafeFunctionDataEx_t *)malloc(
+      NUM_OBJECTS_TO_REPORT * sizeof(ObjInfoThreadSafeFunctionDataEx_t));
+
     SimulatedObjectSearchInVideo(pObjList, NUM_OBJECTS_TO_REPORT);
 
     // Call the thread safe function, that can call JavaScritp callback to push data to JavaScript
@@ -188,8 +141,7 @@ static void ExecuteWork(napi_env env, void *data)
 }
 
 
-
-// This function runs on the main thread after `ExecuteWork` exits.
+// This function runs on the main thread after `ExecuteWork` exited.
 static void OnWorkComplete(napi_env env, napi_status status, void *data)
 {
   AsyncStreamDataEx_t *async_stream_data_ex = (AsyncStreamDataEx_t *)data;
@@ -202,14 +154,13 @@ static void OnWorkComplete(napi_env env, napi_status status, void *data)
   // Set both values to NULL so JavaScript can order a new run of the thread.
   async_stream_data_ex->work_StreamSearch = NULL;
   async_stream_data_ex->tsfn_StreamSearch = NULL;
+  free(data);
 }
 
 
-
-// Create a thread-safe function and an async queue work item. We pass the
-// thread-safe function to the async queue work item so the latter might have a
-// chance to call into JavaScript from the worker thread on which the
-// ExecuteWork callback runs.
+// The native addon's JavaScript function, it will create
+// thread-safe function and an async queue work item from here.
+// Soon after the queueing the workitem we may return this call.
 napi_value CAsyncStreamSearch(napi_env env, napi_callback_info info)
 {
   const size_t MaxArgExpected = 2;
@@ -218,114 +169,49 @@ napi_value CAsyncStreamSearch(napi_env env, napi_callback_info info)
 
   int32_t MaxSearchTime = 0;
   napi_value js_cb;
-
   napi_value work_name;
-  AsyncStreamDataEx_t *async_stream_data_ex;
+  AsyncStreamDataEx_t *async_stream_data_ex = NULL;
 
-  // Retrieve the JavaScript callback we should call with items generated by the
-  // worker thread, and the per-addon data.
-  assert(napi_get_cb_info(env,
-                          info,
-                          &argc,
-                          args,
-                          NULL,
-                          (void **)(&async_stream_data_ex)) == napi_ok);
+  assert(napi_get_cb_info(env, info, &argc, args, NULL, NULL) == napi_ok);
   if (argc != 2)
-  {
     napi_throw_error(env, "EINVAL", "AsyncStreamSearch: Argument count mismatch");
-  }
 
-  // Process the parameters
-  // First argument is time it need to search, in sec
+  // First argument: The amount of time in sec it is allowed to search
   assert(napi_get_value_int32(env, args[0], &MaxSearchTime) == napi_ok);
   js_cb = args[1]; // Second param, the JS callback function
+
+  // This memory will be freed in OnWorkComplete function
+  async_stream_data_ex = (AsyncStreamDataEx_t *)malloc(sizeof(*async_stream_data_ex));
+  async_stream_data_ex->tsfn_StreamSearch = NULL;
+  async_stream_data_ex->work_StreamSearch = NULL;
   async_stream_data_ex->MaxSearchTime = MaxSearchTime;
 
-  // Ensure that no work is currently in progress.
-  assert(async_stream_data_ex->work_StreamSearch == NULL && "Only one StreamSearch work item must exist at a time");
-
-  // Create a string to describe this asynchronous operation.
+  // Specify a name to describe this asynchronous operation.
   assert(napi_create_string_utf8(env,
-                                 "N-API Thread-safe Call from AsyncStreamSearch Work Item",
-                                 NAPI_AUTO_LENGTH,
-                                 &work_name) == napi_ok);
+      "Thread-safe AsyncStreamSearch Work Item",
+      NAPI_AUTO_LENGTH,
+      &work_name) == napi_ok);
 
-  // Convert the callback retrieved from JavaScript into a thread-safe function
-  // which we can call from a worker thread.
+  // Create a thread-safe N-API callback function correspond to the C/C++ callback function
   assert(napi_create_threadsafe_function(env,
-                                         js_cb,
-                                         NULL,
-                                         work_name,
-                                         0,
-                                         1,
-                                         NULL,
-                                         NULL,
-                                         NULL,
-                                         CThreadSafeFun4CallingJS,
-                                         // The asynchronous thread-safe JavaScript function
-                                         &(async_stream_data_ex->tsfn_StreamSearch)) == napi_ok);
+      js_cb, NULL, work_name, 0, 1, NULL, NULL, NULL,
+      ThreadSafeCFunction4CallingJS, // the C/C++ callback function
+      // out: the asynchronous thread-safe JavaScript function
+      &(async_stream_data_ex->tsfn_StreamSearch)) == napi_ok);
 
-  // Create an async work item, passing in the addon data, which will give the
+  // Create an async work item, that can be deployed in the node.js event queue
   // worker thread access to the above-created thread-safe function.
-  assert(napi_create_async_work(env,
-                                NULL,
-                                work_name,
-                                ExecuteWork,
-                                OnWorkComplete,
-                                async_stream_data_ex,
-                                &(async_stream_data_ex->work_StreamSearch)) == napi_ok);
+  assert(napi_create_async_work( env, NULL,
+       work_name,
+       ExecuteWork,
+       OnWorkComplete,
+       async_stream_data_ex,
+       // OUT: THE handle to the async work item
+       &(async_stream_data_ex->work_StreamSearch)) == napi_ok);
 
   // Queue the work item for execution.
   assert(napi_queue_async_work(env, async_stream_data_ex->work_StreamSearch) == napi_ok);
 
   // This causes `undefined` to be returned to JavaScript.
   return NULL;
-}
-
-
-
-// Free the per-addon-instance data.
-static void AsyncStreamData_finalize_cb(napi_env env, void *data, void *hint)
-{
-  AsyncStreamDataEx_t *async_stream_data_ex = (AsyncStreamDataEx_t *)data;
-  assert(async_stream_data_ex->work_StreamSearch == NULL &&
-         "No StreamSearch work item in progress at module unload");
-  free(async_stream_data_ex);
-}
-
-
-// Module registration
-napi_value Init_AsyncStreamSearch(napi_env env, napi_value exports)
-{
-  // Define addon-level data associated with this instance of the addon.
-  AsyncStreamDataEx_t *async_stream_data_ex = (AsyncStreamDataEx_t *)malloc(sizeof(*async_stream_data_ex));
-  async_stream_data_ex->work_StreamSearch = NULL;
-
-  // Define the properties that will be set on exports.
-  napi_property_descriptor start_work = {
-      "AsyncStreamSearch",
-      NULL,
-      CAsyncStreamSearch,
-      NULL,
-      NULL,
-      NULL,
-      napi_default,
-      async_stream_data_ex};
-
-  // Decorate exports with the above-defined properties.
-  assert(napi_define_properties(env, exports, 1, &start_work) == napi_ok);
-
-  // Associate the addon data with the exports object, to make sure that when
-  // the addon gets unloaded our data gets freed.
-  assert(napi_wrap(env,
-                   exports,
-                   async_stream_data_ex,
-                   // This function will be called when JavaScript item associated with
-                   // 'async_stream_data_ex' is ready for garbage-collection
-                   AsyncStreamData_finalize_cb,
-                   NULL,
-                   NULL) == napi_ok);
-
-  // Return the decorated exports object.
-  return exports;
 }
