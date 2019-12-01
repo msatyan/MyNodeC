@@ -14,6 +14,8 @@ function Test_ThreadSafe_AsyncStreamSearch( t ) {
 }
 
 function Main() {
-      Test_ThreadSafe_AsyncStreamSearch( 11 );
+  let search_time = 10;
+  console.log( `Duration of search time specified in seconds = ${search_time}`);
+  Test_ThreadSafe_AsyncStreamSearch( search_time );
 }
 Main();
