@@ -21,6 +21,7 @@ napi_value CArrayBuffer_GetMultiplicationTable(napi_env env, napi_callback_info 
 napi_value CInt32TypedArray_GetMultiplicationTable(napi_env env, napi_callback_info info);
 napi_value CArrayBufferExternalMem_GetMultiplicationTable(napi_env env, napi_callback_info info);
 napi_value CAsyncStreamSearch(napi_env env, napi_callback_info info);
+napi_value CCallEmit2(napi_env env, napi_callback_info info);
 
 #endif  // _ADDON_API_
 

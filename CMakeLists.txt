@@ -44,6 +44,7 @@ file(GLOB SOURCE_FILES
         "${mync1_source_dir}/MyPrintJSObject.cpp"
         "${mync1_source_dir}/MyCallback.cpp"
         "${mync1_source_dir}/MyEventEmit.cpp"
+        "${mync1_source_dir}/MyEventEmit2.cpp"
         "${mync1_source_dir}/MyNativeObj.cpp"
         "${mync1_source_dir}/MyPromise1.cpp"
         "${mync1_source_dir}/SpeedTest.cpp"

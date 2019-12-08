@@ -106,6 +106,10 @@ napi_value Init(napi_env env, napi_value exports)
 		return NULL;
 	if ((status = napi_set_named_property(env, exports, "AsyncStreamSearch", fn)) != napi_ok)
 		return NULL;
+	if ((status = napi_create_function(env, "CallEmit2", NAPI_AUTO_LENGTH, CCallEmit2, NULL, &fn)) != napi_ok)
+		return NULL;
+	if ((status = napi_set_named_property(env, exports, "CallEmit2", fn)) != napi_ok)
+		return NULL;
 
 	MyNativeObj::Init(env, exports);
 
