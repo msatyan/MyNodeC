@@ -17,6 +17,11 @@ set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+# CMAKE_POSITION_INDEPENDENT_CODE vs POSITION_INDEPENDENT_CODE
+# if you need to set position independent code property on all targets then
+# set(CMAKE_POSITION_INDEPENDENT_CODE ON)
+# in this example we are using POSITION_INDEPENDENT_CODE to a specific library by using 'set_target_properties'
+
 set(mync1_include_dir "${PROJECT_SOURCE_DIR}/src/include")
 set(mync1_source_dir "${PROJECT_SOURCE_DIR}/src/mync1")
 
